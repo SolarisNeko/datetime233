@@ -8,6 +8,20 @@ This is a zero-start design DateTime Utils, used to flux DateTime233 API.
 
 从 0 开始设计的 DateTime 工具, flux-style DateTime233 API.
 
+## Use
+### maven
+```xml
+<dependency>
+    <groupId>com.neko233</groupId>
+    <artifactId>datetime233</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
+### gradle
+```kotlin
+implementation("com.neko233:datetime233:0.0.1")
+```
+
 ## Support JDK | JDK 版本支持
 
 JDK 8 = 0.0.1
