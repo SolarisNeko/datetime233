@@ -24,6 +24,8 @@ implementation("com.neko233:datetime233:0.0.1")
 
 ## Support JDK | JDK 版本支持
 
+latest support version: 
+
 JDK 8 = 0.0.1
 
 JDK 11 = 0.0.1
