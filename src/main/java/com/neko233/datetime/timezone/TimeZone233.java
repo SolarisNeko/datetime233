@@ -17,7 +17,7 @@ public class TimeZone233 {
     /**
      * 虽然有 +3.5, 但是大部分不常用, 暂时忽略
      */
-    private static final Map<String, Integer> zoneIdToMsOffset = new HashMap<>() {{
+    private static final Map<String, Integer> zoneIdToMsOffset = new HashMap<String, Integer>() {{
         put("+0", 0);
         put("+1", Math.toIntExact(TimeUnit.HOURS.toMillis(+1)));
         put("+2", Math.toIntExact(TimeUnit.HOURS.toMillis(+2)));

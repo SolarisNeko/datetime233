@@ -3,10 +3,7 @@ package com.neko233.datetime.utils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,9 +13,6 @@ import java.util.regex.Pattern;
  * @author SolarisNeko on 2021-07-01
  **/
 public class KvTemplateForDt {
-
-    private static final Pattern pattern = Pattern.compile("\\$\\{([^}]+)\\}");
-
 
     private final String kvTemplate;
     private final Map<String, Object> kvMap = new HashMap<>(2, 0.8f);
@@ -78,14 +72,14 @@ public class KvTemplateForDt {
     @NotNull
     public static String generateTemplate(String toFormatText,
                                           Map<String, ?> kv) {
-        Set<String> keySet = Optional.ofNullable(kv).orElse(Map.of()).keySet();
+        Set<String> keySet = Optional.ofNullable(kv).orElse(Collections.emptyMap()).keySet();
         return generateTemplate(toFormatText, keySet);
     }
 
     @NotNull
     public static String generateTemplate(String toFormatText, Set<String> keySet) {
         String newFormat = Optional.ofNullable(toFormatText).orElse("");
-        for (String key : Optional.ofNullable(keySet).orElse(Set.of())) {
+        for (String key : Optional.ofNullable(keySet).orElse(Collections.emptySet())) {
             newFormat = newFormat.replaceAll(key, "\\${" + key + "}");
         }
         return newFormat;
