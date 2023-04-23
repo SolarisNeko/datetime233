@@ -4,21 +4,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.neko233</groupId>
-    <artifactId>sql-light-rail</artifactId>
-    <version>1.0.1</version>
+    <artifactId>datetime233</artifactId>
+    <version>0.0.1</version>
 
-    <name>sql_light_rail</name>
-    <url>https://github.com/SolarisNeko/sql-light-rail/tree/main</url>
+    <name>datetime233</name>
+    <url>https://github.com/SolarisNeko/datetime233/tree/main</url>
 
     <description>
-        SQL Light Rail (SQL 轻轨)
-
-        本框架 3 个独立部分组成:
-        1. SqlBuilders ｜ SQL 链式风格写法. Like: mybatis-plus/mybatis-flux 之类的框架 API
-        2. ORM ｜ 查询结果, 自动对象映射
-        3. RepositoryManager with Sharding = 分库分表管理/多DataSource管理. 通过 RepositoryManagerInitializer 进行批量初始化
-
-        default: Druid DataSource
+        DateTime233 is a zero-designed DateTime API by flux-style.
+        重新设计的整套 DateTime API~
     </description>
 
     <developers>
@@ -26,16 +20,12 @@
             <name>SolarisNeko</name>
             <url>https://github.com/SolarisNeko</url>
         </developer>
-        <developer>
-            <name>Emmett Woo</name>
-            <url>https://github.com/Emmettwoo</url>
-        </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/SolarisNeko/sql-light-rail.git</connection>
-        <developerConnection>scm:git:ssh://github.com/SolarisNeko/sql-light-rail.git</developerConnection>
-        <url>http://github.com/SolarisNeko/sql-light-rail/tree/main</url>
+        <connection>scm:git:https://github.com/SolarisNeko/datetime233.git</connection>
+        <developerConnection>scm:git:ssh://github.com/SolarisNeko/datetime233.git</developerConnection>
+        <url>http://github.com/SolarisNeko/datetime233/tree/main</url>
     </scm>
 
     <licenses>
@@ -57,34 +47,6 @@
 
     <dependencies>
 
-        <!-- DAO Layer -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.2.15</version>
-<!--            <scope>test</scope>-->
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.31</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Log -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- 打包不引入实现 -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.11</version>
-            <scope>test</scope>
-        </dependency>
 
         <!-- Util -->
         <dependency>
@@ -118,6 +80,13 @@
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
             <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
         </dependency>
 
 
@@ -247,8 +216,8 @@
                 <version>3.8.1</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>9</source>
+                    <target>9</target>
                 </configuration>
             </plugin>
         </plugins>

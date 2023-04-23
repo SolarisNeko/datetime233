@@ -1,3 +1,0 @@
-# 后续配置, 基于 yml 结构解析。
-sql-light-rail:
-  enable: true
