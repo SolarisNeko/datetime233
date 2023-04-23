@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -303,6 +304,41 @@ public class DateTime233Test {
     public void getWeekday_sameTo_jdk_LocalDateTime() {
         int weekDay = DateTime233.now().weekDay();
         assertEquals(LocalDateTime.now().getDayOfWeek().getValue(), weekDay);
+    }
+
+    @Test
+    public void isEquals() {
+        DateTime233 one = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        assertEquals(true, one.isEquals(two));
+    }
+
+    @Test
+    public void isAfter() {
+        DateTime233 one = DateTime233.of("2023-01-02", "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        assertEquals(true, one.isAfter(two));
+    }
+
+    @Test
+    public void isBefore() {
+        DateTime233 one = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2023-01-02", "yyyy-MM-dd");
+        assertEquals(true, one.isBefore(two));
+    }
+
+    @Test
+    public void diff() {
+        DateTime233 one = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2023-01-02", "yyyy-MM-dd");
+        assertEquals(-1, one.diff(two, TimeUnit.DAYS));
+    }
+
+    @Test
+    public void diffAbs() {
+        DateTime233 one = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2023-01-02", "yyyy-MM-dd");
+        assertEquals(1, one.diffAbs(two, TimeUnit.DAYS));
     }
 
 }

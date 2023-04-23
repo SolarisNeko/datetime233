@@ -4,7 +4,9 @@ import com.neko233.datetime.DateTime233;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Objects;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author LuoHaoJun on 2023-04-23
@@ -188,4 +190,67 @@ public interface DateTimeApi {
     String format(String formatStyle);
 
     Date toDate();
+
+
+    /**
+     * 是否相等
+     *
+     * @param other datetime233
+     * @return is same to others ?
+     */
+    default boolean isEquals(DateTime233 other) {
+        if (other == null) {
+            return true;
+        }
+        return Objects.equals(originalMs(), other.originalMs());
+    }
+
+    /**
+     * 是否在另一个时间之前 ?
+     *
+     * @param other datetime233
+     * @return is before others ?
+     */
+    default boolean isBefore(DateTime233 other) {
+        if (other == null) {
+            return true;
+        }
+        return originalMs() < other.originalMs();
+    }
+
+    /**
+     * @return is after others ?
+     */
+    default boolean isAfter(DateTime233 other) {
+        if (other == null) {
+            return true;
+        }
+        return originalMs() > other.originalMs();
+    }
+
+    /**
+     * 与另外一个时间相比的差值
+     *
+     * @param other    dateTime233
+     * @param timeUnit 提供时间格式
+     * @return 该格式的时间差
+     */
+    default long diff(DateTime233 other, TimeUnit timeUnit) {
+        if (other == null || timeUnit == null) {
+            return 0L;
+        }
+        long diffMs = originalMs() - other.originalMs();
+        return timeUnit.convert(diffMs, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * @param other    dateTime233
+     * @param timeUnit 提供时间格式
+     * @return 该格式的时间差 to 绝对值
+     */
+    default long diffAbs(DateTime233 other, TimeUnit timeUnit) {
+        return Math.abs(diff(other, timeUnit));
+    }
+
+
 }
