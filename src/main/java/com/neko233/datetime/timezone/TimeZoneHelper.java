@@ -1,7 +1,7 @@
 package com.neko233.datetime.timezone;
 
 /**
- * @author LuoHaoJun on 2023-04-23
+ * @author SolarisNeko on 2023-04-23
  **/
 public class TimeZoneHelper {
 

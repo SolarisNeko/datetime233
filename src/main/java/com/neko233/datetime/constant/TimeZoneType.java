@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author LuoHaoJun on 2023-04-23
+ * @author SolarisNeko on 2023-04-23
  **/
 public enum TimeZoneType {
 

@@ -6,6 +6,20 @@ import com.neko233.datetime.utils.KvTemplateForDt;
 
 public class SystemClockSettings {
 
+    /**
+     * 修改系统时间 by timeZoneMs
+     *
+     * @param dateTime233 日期时间
+     */
+    public static void modifyOsDateTime(DateTime233 dateTime233) {
+        modifyOsDateTime(dateTime233.zoneTimeMs());
+    }
+
+    /**
+     * 修改系统时间
+     *
+     * @param trueTimeMs
+     */
     public static void modifyOsDateTime(long trueTimeMs) {
         // 设置为你想要设置的时间
         String osName = System.getProperty("os.name").toLowerCase();

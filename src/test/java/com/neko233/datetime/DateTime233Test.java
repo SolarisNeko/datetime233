@@ -1,9 +1,11 @@
 package com.neko233.datetime;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -20,20 +22,75 @@ public class DateTime233Test {
 
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
+
     @Test
-    public void test_flux() {
-        String string = DateTime233.now()
-                .plusHours(1)
-                .plusYears(1)
-                .toString();
-        System.out.println(string);
+    public void test_sync_jdk_dateTime() {
+        DateTime233 of = DateTime233.of("2010-01-01", "yyyy-MM-dd");
+        LocalDateTime of1 = LocalDateTime.of(2010, 1, 1, 0, 0, 0);
+
+        for (int i = 0; i < 367; i++) {
+            DateTime233 dateTime233 = of.plusDays(i);
+            String jdkDateTimeString = of1.plusDays(i)
+                    .format(DateTimeFormatter.ofPattern(YYYY_MM_DD_HH_MM_SS));
+            assertEquals(jdkDateTimeString, dateTime233.toString("yyyy-MM-dd HH:mm:ss"));
+        }
+    }
 
 
-        long msFrom1970 = DateTime233.now()
-                .plusHours(1)
-                .plusYears(1)
-                .toMsFrom1970();
-        System.out.println(msFrom1970);
+    @Test
+    public void test_sync_jdk_weekday() {
+        DateTime233 of = DateTime233.of("2010-01-01", "yyyy-MM-dd");
+        LocalDateTime of1 = LocalDateTime.of(2010, 1, 1, 0, 0, 0);
+
+        for (int i = 0; i < 367; i++) {
+            DateTime233 dateTime233 = of.plusDays(i);
+            DayOfWeek dayOfWeek = of1.plusDays(i)
+                    .getDayOfWeek();
+
+            int jdkWeekDay = dayOfWeek.getValue();
+            int weekDay = dateTime233.weekDay();
+
+            if (jdkWeekDay != weekDay) {
+                String format = String.format("jdkWeek = %s, dateTime233 week = %s, dateTime = %s", jdkWeekDay, weekDay, dateTime233);
+                System.err.println(format);
+                Assert.fail();
+            }
+
+        }
+    }
+
+    @Test
+    public void test_special_format_1() {
+        DateTime233 of = DateTime233.of("2010/01/01", "yyyy/MM/dd");
+        assertEquals("2010-01-01 00:00:00", of.toString());
+    }
+
+    @Test
+    public void test_special_format_2() {
+        DateTime233 of2 = DateTime233.of("2010.01.01", "yyyy,MM,dd");
+        assertEquals("2010-01-01 00:00:00", of2.toString());
+    }
+
+    @Test
+    public void test_special_format_3() {
+        DateTime233 of3 = DateTime233.of("2010,01,01", "yyyy.MM.dd");
+        assertEquals("2010-01-01 00:00:00", of3.toString());
+    }
+
+
+    @Test
+    public void test_weekday_1() {
+        DateTime233 of = DateTime233.of("2010-01-31", "yyyy-MM-dd");
+        assertEquals(7, of.weekDay());
+    }
+
+
+    @Test
+    public void test_weekday_2() {
+        // 2023-12-31
+        DateTime233 of = DateTime233.of(1703952000000L);
+
+        assertEquals(7, of.weekDay());
     }
 
     @Test
@@ -180,7 +237,8 @@ public class DateTime233Test {
     @Test
     public void plusDays() {
         DateTime233 dateTime = DateTime233.now().plusDays(1);
-        assertEquals(getDateTimeString(LocalDateTime.now().plusDays(1)), dateTime.toString());
+        LocalDateTime now = LocalDateTime.now();
+        assertEquals(getDateTimeString(now.plusDays(1)), dateTime.toString());
     }
 
 

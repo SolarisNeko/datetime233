@@ -14,23 +14,36 @@ This is a zero-start design DateTime Utils, used to flux DateTime233 API.
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>datetime233</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.5</version>
 </dependency>
 ```
 ### gradle
 ```kotlin
-implementation("com.neko233:datetime233:0.0.2")
+implementation("com.neko233:datetime233:0.0.5")
 ```
 
 ## Support JDK | JDK 版本支持
 
 latest support version: 
 
-JDK 8 = 0.0.2
+JDK 8 = 0.0.5
 
-JDK 11 = 0.0.2
+JDK 11 = 0.0.5
 
-JDK 17 = 0.0.2
+JDK 17 = 0.0.5
+
+## Terminology 术语/概念须知
+
+originTimeMs = millis second = 毫秒, 从 1970-01-01 00:00:00 至今
+
+zoneTimeMs = zone time ms = 时区下的毫秒, 从 1970-01-01 00:00:00 至今
+
+DateTime = yyyy-MM-dd HH:mm:ss 组成的日期时间
+
+Period = 周期 = [start, endMs] -> {startMs, endMs, expireMs, refreshMs}
+
+refreshMs = period refresh by refreshMs / time, like 100ms refresh , in 1 s have 10 refresh count.
+
 
 
 ### 介绍
@@ -50,7 +63,7 @@ License 为 Apache2.0
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>datetime233</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.5</version>
 </dependency>
 
 ```
@@ -58,7 +71,7 @@ License 为 Apache2.0
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'datetime233', version: '0.0.2'
+implementation group: 'com.neko233', name: 'datetime233', version: '0.0.5'
 ```
 
 ## 初衷 / 痛点
@@ -71,16 +84,19 @@ Enough of DateTime/Date, to do a lot of their own packaging. And there are few f
 # Code 
 
 ## Java
+### DateTime233  日期时间
 ```java
-package com.neko233.datetime;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
@@ -93,20 +109,75 @@ public class DateTime233Test {
 
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
+
     @Test
-    public void test_flux() {
-        String string = DateTime233.now()
-                .plusHours(1)
-                .plusYears(1)
-                .toString();
-        System.out.println(string);
+    public void test_sync_jdk_dateTime() {
+        DateTime233 of = DateTime233.of("2010-01-01", "yyyy-MM-dd");
+        LocalDateTime of1 = LocalDateTime.of(2010, 1, 1, 0, 0, 0);
+
+        for (int i = 0; i < 367; i++) {
+            DateTime233 dateTime233 = of.plusDays(i);
+            String jdkDateTimeString = of1.plusDays(i)
+                    .format(DateTimeFormatter.ofPattern(YYYY_MM_DD_HH_MM_SS));
+            assertEquals(jdkDateTimeString, dateTime233.toString("yyyy-MM-dd HH:mm:ss"));
+        }
+    }
 
 
-        long msFrom1970 = DateTime233.now()
-                .plusHours(1)
-                .plusYears(1)
-                .toMsFrom1970();
-        System.out.println(msFrom1970);
+    @Test
+    public void test_sync_jdk_weekday() {
+        DateTime233 of = DateTime233.of("2010-01-01", "yyyy-MM-dd");
+        LocalDateTime of1 = LocalDateTime.of(2010, 1, 1, 0, 0, 0);
+
+        for (int i = 0; i < 367; i++) {
+            DateTime233 dateTime233 = of.plusDays(i);
+            DayOfWeek dayOfWeek = of1.plusDays(i)
+                    .getDayOfWeek();
+
+            int jdkWeekDay = dayOfWeek.getValue();
+            int weekDay = dateTime233.weekDay();
+
+            if (jdkWeekDay != weekDay) {
+                String format = String.format("jdkWeek = %s, dateTime233 week = %s, dateTime = %s", jdkWeekDay, weekDay, dateTime233);
+                System.err.println(format);
+                Assert.fail();
+            }
+
+        }
+    }
+
+    @Test
+    public void test_special_format_1() {
+        DateTime233 of = DateTime233.of("2010/01/01", "yyyy/MM/dd");
+        assertEquals("2010-01-01 00:00:00", of.toString());
+    }
+
+    @Test
+    public void test_special_format_2() {
+        DateTime233 of2 = DateTime233.of("2010.01.01", "yyyy,MM,dd");
+        assertEquals("2010-01-01 00:00:00", of2.toString());
+    }
+
+    @Test
+    public void test_special_format_3() {
+        DateTime233 of3 = DateTime233.of("2010,01,01", "yyyy.MM.dd");
+        assertEquals("2010-01-01 00:00:00", of3.toString());
+    }
+
+
+    @Test
+    public void test_weekday_1() {
+        DateTime233 of = DateTime233.of("2010-01-31", "yyyy-MM-dd");
+        assertEquals(7, of.weekDay());
+    }
+
+
+    @Test
+    public void test_weekday_2() {
+        // 2023-12-31
+        DateTime233 of = DateTime233.of(1703952000000L);
+
+        assertEquals(7, of.weekDay());
     }
 
     @Test
@@ -253,7 +324,8 @@ public class DateTime233Test {
     @Test
     public void plusDays() {
         DateTime233 dateTime = DateTime233.now().plusDays(1);
-        assertEquals(getDateTimeString(LocalDateTime.now().plusDays(1)), dateTime.toString());
+        LocalDateTime now = LocalDateTime.now();
+        assertEquals(getDateTimeString(now.plusDays(1)), dateTime.toString());
     }
 
 
@@ -379,7 +451,124 @@ public class DateTime233Test {
         assertEquals(LocalDateTime.now().getDayOfWeek().getValue(), weekDay);
     }
 
+    @Test
+    public void isEquals() {
+        DateTime233 one = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        assertEquals(true, one.isEquals(two));
+    }
+
+    @Test
+    public void isAfter() {
+        DateTime233 one = DateTime233.of("2023-01-02", "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        assertEquals(true, one.isAfter(two));
+    }
+
+    @Test
+    public void isBefore() {
+        DateTime233 one = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2023-01-02", "yyyy-MM-dd");
+        assertEquals(true, one.isBefore(two));
+    }
+
+    @Test
+    public void diff() {
+        DateTime233 one = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2023-01-02", "yyyy-MM-dd");
+        assertEquals(-1, one.diff(two, TimeUnit.DAYS));
+    }
+
+    @Test
+    public void diffAbs() {
+        DateTime233 one = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2023-01-02", "yyyy-MM-dd");
+        assertEquals(1, one.diffAbs(two, TimeUnit.DAYS));
+    }
+
 }
 ```
 
+### Period233 周期 
+```java
 
+
+import com.neko233.datetime.DateTime233;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+/**
+ * @author SolarisNeko
+ * Date on 2023-04-25
+ */
+public class Period233Test {
+
+
+
+    @Test
+    public void getAllWeekends() {
+        DateTime233 of = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 end = DateTime233.of("2024-01-01", "yyyy-MM-dd");
+        Period233 between = Period233.between(of, end);
+
+
+        List<String> collect = between.getAllWeekends()
+                .stream()
+                .map(DateTime233::toString)
+                .collect(Collectors.toList());
+
+
+    }
+
+    @Test
+    public void step() {
+        DateTime233 of = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 end = DateTime233.of("2024-01-01", "yyyy-MM-dd");
+        Period233 between = Period233.between(of, end);
+
+        PeriodDaddy233 periodDaddy = between.splitByFixTimeStep(1, TimeUnit.DAYS);
+        int childPeriodCount = periodDaddy.getChildPeriodCount();
+
+        Assert.assertEquals(365, childPeriodCount);
+    }
+
+    @Test
+    public void dynamic() {
+        DateTime233 of = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 end = DateTime233.of("2024-01-01", "yyyy-MM-dd");
+        Period233 between = Period233.between(of, end);
+
+        PeriodDaddy233 periodsChain = between.generateDynamicPeriod((count) -> {
+            return count * TimeUnit.DAYS.toMillis(1);
+        }, (count) -> {
+            return 0L;
+        });
+        periodsChain.forEach(period -> {
+            DateTime233 startDt = DateTime233.of(period.getStartMs());
+            DateTime233 endDt = DateTime233.of(period.getEndMs());
+            DateTime233 expireDt = DateTime233.of(period.getExpireMs());
+        });
+    }
+
+    @Test
+    public void step_complex() {
+        DateTime233 of = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 end = DateTime233.of("2024-01-01", "yyyy-MM-dd");
+        Period233 between = Period233.between(of, end);
+
+        PeriodDaddy233 periodsDad = between.splitByFixTimeStep(30, TimeUnit.DAYS, 30, TimeUnit.DAYS);
+        periodsDad.forEach(period -> {
+            DateTime233 startDt = DateTime233.of(period.getStartMs());
+            DateTime233 endDt = DateTime233.of(period.getEndMs());
+            DateTime233 expireDt = DateTime233.of(period.getExpireMs());
+        });
+    }
+
+
+}
+
+```

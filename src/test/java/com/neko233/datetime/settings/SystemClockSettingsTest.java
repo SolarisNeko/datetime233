@@ -6,7 +6,6 @@ package com.neko233.datetime.settings;
  */
 public class SystemClockSettingsTest {
 
-    //    @Test
     public void test() {
         SystemClockSettings.modifyOsDateTime(System.currentTimeMillis() + 5000);
     }

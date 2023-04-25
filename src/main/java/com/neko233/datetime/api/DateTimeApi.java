@@ -9,21 +9,21 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author LuoHaoJun on 2023-04-23
+ * @author SolarisNeko on 2023-04-23
  **/
 public interface DateTimeApi {
 
     /**
      * {@link java.util.Date} 使用该毫秒, 因其自带时区有 bug
      *
-     * @return 无时区偏移的 ms | 如 UTC+0 时区 ms
+     * @return 无时区偏移的 time ms | 如 UTC+0 时区 ms
      */
-    long originalMs();
+    long originalTimeMs();
 
     /**
-     * @return 时区偏移后的 ms
+     * @return 带时区偏移后的 time ms
      */
-    long gmtZoneMs();
+    long zoneTimeMs();
 
     /**
      * @return 当前时区
@@ -202,7 +202,7 @@ public interface DateTimeApi {
         if (other == null) {
             return true;
         }
-        return Objects.equals(originalMs(), other.originalMs());
+        return Objects.equals(originalTimeMs(), other.originalTimeMs());
     }
 
     /**
@@ -215,7 +215,7 @@ public interface DateTimeApi {
         if (other == null) {
             return true;
         }
-        return originalMs() < other.originalMs();
+        return originalTimeMs() < other.originalTimeMs();
     }
 
     /**
@@ -225,7 +225,7 @@ public interface DateTimeApi {
         if (other == null) {
             return true;
         }
-        return originalMs() > other.originalMs();
+        return originalTimeMs() > other.originalTimeMs();
     }
 
     /**
@@ -239,7 +239,7 @@ public interface DateTimeApi {
         if (other == null || timeUnit == null) {
             return 0L;
         }
-        long diffMs = originalMs() - other.originalMs();
+        long diffMs = originalTimeMs() - other.originalTimeMs();
         return timeUnit.convert(diffMs, TimeUnit.MILLISECONDS);
     }
 
@@ -253,4 +253,5 @@ public interface DateTimeApi {
     }
 
 
+    DateTime233 toZeroClock();
 }

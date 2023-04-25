@@ -59,6 +59,16 @@ public class DateTime233 implements DateTimeApi {
     private final int millisSecond;
 
 
+    /**
+     * 零点时刻. 当天的 yyyy-MM-dd 00:00:00 分
+     *
+     * @param originalMs 时间戳
+     * @return DateTime233
+     */
+    public static DateTime233 ofZeroClock(long originalMs) {
+        return new DateTime233(originalMs).toZeroClock();
+    }
+
     public static DateTime233 of(long originalMs) {
         return new DateTime233(originalMs);
     }
@@ -85,8 +95,8 @@ public class DateTime233 implements DateTimeApi {
     public static Map<String, Object> parseDateString(String dateString,
                                                       String format) {
         Map<String, Object> resultMap = new HashMap<>();
-        String[] dateArr = dateString.split("[\\-?_\\s:]");
-        String[] formatArr = format.split("[\\-?_\\s:]");
+        String[] dateArr = dateString.split("[.,/\\-?_\\s:]");
+        String[] formatArr = format.split("[.,/\\-?_\\s:]");
         for (int i = 0; i < formatArr.length; i++) {
             String key = formatArr[i];
             String value = dateArr[i];
@@ -209,6 +219,11 @@ public class DateTime233 implements DateTimeApi {
         return this.gmtZoneId;
     }
 
+    @Override
+    public DateTime233 toZeroClock() {
+        return new DateTime233(year, month, day,
+                0, 0, 0, 0, this.offsetByTimeZoneMs);
+    }
 
     @Override
     public int year() {
@@ -428,11 +443,11 @@ public class DateTime233 implements DateTimeApi {
         return this.plusMillisSecond(-millisSecond);
     }
 
-    public long originalMs() {
+    public long originalTimeMs() {
         return this.originalMs;
     }
 
-    public long gmtZoneMs() {
+    public long zoneTimeMs() {
         return this.currentZoneTimeMs;
     }
 
@@ -447,7 +462,7 @@ public class DateTime233 implements DateTimeApi {
     /**
      * to jdk DateTime
      *
-     * @return
+     * @return 转换为 JDK 的 DateTime
      */
     public LocalDateTime toLocalDateTime() {
         return LocalDateTime.of(year, month, day, hour, minute, second);
@@ -571,15 +586,23 @@ public class DateTime233 implements DateTimeApi {
         // 计算年份和月份
         int year = whichYear(timeMs);
         int dayOfYears = dayOfYear(timeMs);
+
         int tempDayOfMonth = dayOfYears;
         int month = 1;
         while (true) {
-            int daysInMonth = getDaysInMonth(year, month);
-            if (tempDayOfMonth < daysInMonth) {
+            int fixedDayInMonth = getDaysInMonth(year, month);
+            if (tempDayOfMonth < fixedDayInMonth) {
                 break;
             }
-            tempDayOfMonth -= daysInMonth;
+            tempDayOfMonth -= fixedDayInMonth;
+            if (tempDayOfMonth == 0) {
+                tempDayOfMonth = fixedDayInMonth;
+                break;
+            }
             month++;
+        }
+        if (month > 12) {
+            year += month / 12;
         }
         // 计算日期
         int dayOfMonth = tempDayOfMonth;
