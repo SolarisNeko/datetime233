@@ -252,5 +252,10 @@ public interface DateTimeApi<T extends DateTimeApi<?>> {
     }
 
 
+    /**
+     * 零点时刻. 当天的 yyyy-MM-dd 00:00:00 分
+     *
+     * @return T
+     */
     T toZeroClock();
 }
