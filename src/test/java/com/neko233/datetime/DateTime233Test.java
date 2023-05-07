@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +23,45 @@ public class DateTime233Test {
 
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
+
+    @Test
+    public void bugfix_test_timeMs_1() {
+        DateTime233 of = DateTime233.of("2010-10-01", "yyyy-MM-dd");
+
+        long timeMs_2010_10_01 = of.originalTimeMs();
+        assertEquals(1285862400000L, timeMs_2010_10_01);
+
+        DateTime233 dt_2010_10_02 = of.plusDays(1);
+        long timeMs_2010_10_02 = dt_2010_10_02.originalTimeMs();
+        assertEquals(1285948800000L, timeMs_2010_10_02);
+
+        long dt_2001_11_01 = DateTime233.of("2001-11-01", "yyyy-MM-dd")
+                .originalTimeMs();
+        assertEquals(1004544000000L, dt_2001_11_01);
+    }
+
+    // 70 ms ~ 300ms
+    @Test
+    public void test_timeMs_check() {
+
+        DateTime233 dt = DateTime233.of("1970-01-01", "yyyy-MM-dd");
+        LocalDateTime jdkDt = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
+
+        // 检查 200 年 ~= 7w3 ~= 10w times
+        int year200 = 365 * 300;
+        for (int i = 0; i < year200; i++) {
+
+            // JDK LocalDateTime toInstant, if you is zone+8, it will give you "- zone+8 ms" originMs...
+            long zoneTimeMsByJdk = jdkDt.toInstant(ZoneOffset.of("+0")).getEpochSecond() * 1000;
+            long zoneTimeMs = dt.zoneTimeMs();
+            assertEquals(zoneTimeMsByJdk, zoneTimeMs);
+
+            dt = dt.plusDays(1);
+            jdkDt = jdkDt.plusDays(1);
+        }
+
+
+    }
 
     @Test
     public void test_sync_jdk_dateTime() {
@@ -398,5 +438,6 @@ public class DateTime233Test {
         DateTime233 two = DateTime233.of("2023-01-02", "yyyy-MM-dd");
         assertEquals(1, one.diffAbs(two, TimeUnit.DAYS));
     }
+
 
 }

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class DateTime233 implements DateTimeApi {
+public class DateTime233 implements DateTimeApi<DateTime233> {
 
 
     public static final int MAX_MONTH_COUNT = 12;
@@ -477,7 +477,7 @@ public class DateTime233 implements DateTimeApi {
      * @param hour   时
      * @param minute 分
      * @param second 秒
-     * @return
+     * @return 已过的时间戳
      */
     public static long calculateOffsetMs(int year,
                                          int month,
@@ -489,21 +489,22 @@ public class DateTime233 implements DateTimeApi {
                                          int zoneOffsetMs
     ) {
         int offsetYear = Math.max(0, year - Constant.START_YEAR_NUMBER);
+        int toCalcLeapYear = offsetYear + 1;
         // year's day count
-        long totalDays = offsetYear * 365L + offsetYear / 4 - offsetYear / 100 + offsetYear / 400;
+        long totalElapsedDays = offsetYear * 365L + toCalcLeapYear / 4 - toCalcLeapYear / 100 + toCalcLeapYear / 400;
 
         // month's day count
         if (month > 2 && isLeapYear(year)) {
-            totalDays++;
+            totalElapsedDays++;
         }
         // 此处不需要考虑闰年 +1 day, year done
         for (int i = 0; i < Math.min(month - 1, MAX_MONTH_COUNT); i++) {
-            totalDays += Month233.DAYS_IN_MONTH_ARRAY[i];
+            totalElapsedDays += Month233.DAYS_IN_MONTH_ARRAY[i];
         }
         // just day count
-        totalDays += day - 1;
+        totalElapsedDays += day - 1;
 
-        long totalMs = TimeUnit.DAYS.toMillis(totalDays)
+        long totalMs = TimeUnit.DAYS.toMillis(totalElapsedDays)
                 + TimeUnit.HOURS.toMillis(hour)
                 + TimeUnit.MINUTES.toMillis(minute)
                 + second * 1000L

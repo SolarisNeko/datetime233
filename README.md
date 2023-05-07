@@ -14,23 +14,23 @@ This is a zero-start design DateTime Utils, used to flux DateTime233 API.
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>datetime233</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
 </dependency>
 ```
 ### gradle
 ```kotlin
-implementation("com.neko233:datetime233:0.0.5")
+implementation("com.neko233:datetime233:0.0.6")
 ```
 
 ## Support JDK | JDK 版本支持
 
 latest support version: 
 
-JDK 8 = 0.0.5
+JDK 8 = 0.0.6
 
-JDK 11 = 0.0.5
+JDK 11 = 0.0.6
 
-JDK 17 = 0.0.5
+JDK 17 = 0.0.6
 
 ## Terminology 术语/概念须知
 
@@ -63,7 +63,7 @@ License 为 Apache2.0
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>datetime233</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
 </dependency>
 
 ```
@@ -71,7 +71,7 @@ License 为 Apache2.0
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'datetime233', version: '0.0.5'
+implementation group: 'com.neko233', name: 'datetime233', version: '0.0.6'
 ```
 
 ## 初衷 / 痛点

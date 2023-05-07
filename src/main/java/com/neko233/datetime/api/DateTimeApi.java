@@ -1,6 +1,5 @@
 package com.neko233.datetime.api;
 
-import com.neko233.datetime.DateTime233;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -11,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author SolarisNeko on 2023-04-23
  **/
-public interface DateTimeApi {
+public interface DateTimeApi<T extends DateTimeApi<?>> {
 
     /**
      * {@link java.util.Date} 使用该毫秒, 因其自带时区有 bug
@@ -80,7 +79,7 @@ public interface DateTimeApi {
      * @param year 年
      * @return DateTime
      */
-    DateTime233 year(int year);
+    T year(int year);
 
     /**
      * @return 月
@@ -91,7 +90,7 @@ public interface DateTimeApi {
      * @param month 月
      * @return newOne
      */
-    DateTime233 month(int month);
+    T month(int month);
 
     /**
      * @return 日
@@ -102,7 +101,7 @@ public interface DateTimeApi {
      * @param day 日
      * @return newOne
      */
-    DateTime233 day(int day);
+    T day(int day);
 
     /**
      * @return 时
@@ -113,7 +112,7 @@ public interface DateTimeApi {
      * @param hour 时
      * @return newOne
      */
-    DateTime233 hour(int hour);
+    T hour(int hour);
 
     /**
      * @return 分
@@ -124,7 +123,7 @@ public interface DateTimeApi {
      * @param minute 分
      * @return newOne
      */
-    DateTime233 minute(int minute);
+    T minute(int minute);
 
     /**
      * @return 秒
@@ -135,7 +134,7 @@ public interface DateTimeApi {
      * @param second 秒
      * @return 秒
      */
-    DateTime233 second(int second);
+    T second(int second);
 
     /**
      * @return 毫秒
@@ -146,7 +145,7 @@ public interface DateTimeApi {
      * @param millisSecond 毫秒
      * @return 毫秒
      */
-    DateTime233 millisSecond(int millisSecond);
+    T millisSecond(int millisSecond);
 
     int timeZoneOffsetMs();
 
@@ -154,35 +153,35 @@ public interface DateTimeApi {
      * @param timeZoneOffsetHourId 时区偏移, 小时id. 例如 +8 时区 = 8, -8 时区 = -8
      * @return new
      */
-    DateTime233 timeZone(int timeZoneOffsetHourId);
+    T timeZone(int timeZoneOffsetHourId);
 
-    DateTime233 plusYears(int year);
+    T plusYears(int year);
 
-    DateTime233 minusYears(int year);
+    T minusYears(int year);
 
-    DateTime233 plusMonths(int plusMonth);
+    T plusMonths(int plusMonth);
 
-    DateTime233 minusMonths(int month);
+    T minusMonths(int month);
 
-    DateTime233 plusDays(int days);
+    T plusDays(int days);
 
-    DateTime233 minusDays(int days);
+    T minusDays(int days);
 
-    DateTime233 plusHours(int hour);
+    T plusHours(int hour);
 
-    DateTime233 minusHours(int hour);
+    T minusHours(int hour);
 
-    DateTime233 plusMinutes(int minute);
+    T plusMinutes(int minute);
 
-    DateTime233 minusMinutes(int minute);
+    T minusMinutes(int minute);
 
-    DateTime233 plusSeconds(int second);
+    T plusSeconds(int second);
 
-    DateTime233 minusSeconds(int second);
+    T minusSeconds(int second);
 
-    DateTime233 plusMillisSecond(int millisSecond);
+    T plusMillisSecond(int millisSecond);
 
-    DateTime233 minusMillisSecond(int millisSecond);
+    T minusMillisSecond(int millisSecond);
 
 
     String toString();
@@ -198,7 +197,7 @@ public interface DateTimeApi {
      * @param other datetime233
      * @return is same to others ?
      */
-    default boolean isEquals(DateTime233 other) {
+    default boolean isEquals(T other) {
         if (other == null) {
             return true;
         }
@@ -211,7 +210,7 @@ public interface DateTimeApi {
      * @param other datetime233
      * @return is before others ?
      */
-    default boolean isBefore(DateTime233 other) {
+    default boolean isBefore(T other) {
         if (other == null) {
             return true;
         }
@@ -221,7 +220,7 @@ public interface DateTimeApi {
     /**
      * @return is after others ?
      */
-    default boolean isAfter(DateTime233 other) {
+    default boolean isAfter(T other) {
         if (other == null) {
             return true;
         }
@@ -235,7 +234,7 @@ public interface DateTimeApi {
      * @param timeUnit 提供时间格式
      * @return 该格式的时间差
      */
-    default long diff(DateTime233 other, TimeUnit timeUnit) {
+    default long diff(T other, TimeUnit timeUnit) {
         if (other == null || timeUnit == null) {
             return 0L;
         }
@@ -246,12 +245,12 @@ public interface DateTimeApi {
     /**
      * @param other    dateTime233
      * @param timeUnit 提供时间格式
-     * @return 该格式的时间差 to 绝对值
+     * @return 该格式的时间差, 绝对值
      */
-    default long diffAbs(DateTime233 other, TimeUnit timeUnit) {
+    default long diffAbs(T other, TimeUnit timeUnit) {
         return Math.abs(diff(other, timeUnit));
     }
 
 
-    DateTime233 toZeroClock();
+    T toZeroClock();
 }
