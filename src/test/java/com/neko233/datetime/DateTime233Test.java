@@ -91,12 +91,21 @@ public class DateTime233Test {
             int weekDay = dateTime233.weekDay();
 
             if (jdkWeekDay != weekDay) {
-                String format = String.format("jdkWeek = %s, dateTime233 week = %s, dateTime = %s", jdkWeekDay, weekDay, dateTime233);
+                String format = String.format("jdkWeek = %s, dateTime233 week = %s, dateTime = %s",
+                        jdkWeekDay,
+                        weekDay,
+                        dateTime233);
                 System.err.println(format);
                 Assert.fail();
             }
 
         }
+    }
+
+    @Test
+    public void test_special_format_0() {
+        DateTime233 of = DateTime233.of("20100101", "yyyyMMdd");
+        assertEquals("2010-01-01 00:00:00", of.toString());
     }
 
     @Test

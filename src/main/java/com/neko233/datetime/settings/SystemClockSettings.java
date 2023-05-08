@@ -2,7 +2,7 @@ package com.neko233.datetime.settings;
 
 
 import com.neko233.datetime.DateTime233;
-import com.neko233.datetime.utils.KvTemplateForDt;
+import com.neko233.skilltree.commons.core.base.KvTemplate233;
 
 public class SystemClockSettings {
 
@@ -37,7 +37,7 @@ public class SystemClockSettings {
                 throw new IllegalArgumentException("not support this os = " + osName);
             }
 
-            runtime.exec(KvTemplateForDt.builder(template)
+            runtime.exec(KvTemplate233.builder(template)
                     .put("yyyy-MM-dd HH:mm:ss", DateTime233.of(trueTimeMs).toString())
                     .build());
         } catch (Exception e) {

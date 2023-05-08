@@ -5,7 +5,7 @@
 
     <groupId>com.neko233</groupId>
     <artifactId>datetime233</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7</version>
 
     <name>datetime233</name>
     <url>https://github.com/SolarisNeko/datetime233/tree/main</url>
@@ -59,14 +59,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.4</version>
+            <groupId>com.neko233</groupId>
+            <artifactId>skilltree-commons-core</artifactId>
+            <version>0.0.2</version>
         </dependency>
 
         <!-- Test -->

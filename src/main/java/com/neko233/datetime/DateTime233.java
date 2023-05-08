@@ -1,9 +1,11 @@
 package com.neko233.datetime;
 
 import com.neko233.datetime.api.DateTimeApi;
+import com.neko233.datetime.constant.DateTimeToken;
 import com.neko233.datetime.constant.Month233;
 import com.neko233.datetime.timezone.TimeZone233;
-import com.neko233.datetime.utils.KvTemplateForDt;
+import com.neko233.datetime.utils.TextTokenUtils;
+import com.neko233.skilltree.commons.core.base.KvTemplate233;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
 
     public static final int MAX_MONTH_COUNT = 12;
+    public static final String SPLIT_DATETIME_FORMAT = "[.,/\\-?_\\s:]";
 
     public boolean isLearYear() {
         return DateTime233.isLeapYear(this.year);
@@ -79,7 +82,9 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     public static DateTime233 of(String dateTimeText,
                                  String format) {
-        Map<String, Object> map = parseDateString(dateTimeText, format);
+        Map<String, String> map = TextTokenUtils.matchFullyToTokenMap(dateTimeText, format,
+                DateTimeToken.DATE_TIME_TOKEN_LIST);
+
         int year = Integer.parseInt(String.valueOf(map.getOrDefault("yyyy", "0")));
         int month = Integer.parseInt(String.valueOf(map.getOrDefault("MM", "0")));
         int day = Integer.parseInt(String.valueOf(map.getOrDefault("dd", "0")));
@@ -89,43 +94,47 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
         int millisSecond = Integer.parseInt(String.valueOf(map.getOrDefault("SSS", "0")));
 
         return new DateTime233(year, month, day,
-                hour, minute, second, millisSecond, TimeZone.getDefault().getRawOffset());
+                hour, minute, second,
+                millisSecond,
+                TimeZone.getDefault().getRawOffset()
+        );
     }
 
-    public static Map<String, Object> parseDateString(String dateString,
-                                                      String format) {
-        Map<String, Object> resultMap = new HashMap<>();
-        String[] dateArr = dateString.split("[.,/\\-?_\\s:]");
-        String[] formatArr = format.split("[.,/\\-?_\\s:]");
-        for (int i = 0; i < formatArr.length; i++) {
-            String key = formatArr[i];
-            String value = dateArr[i];
-            if (key.matches("y+")) {
-                // 年
-                resultMap.put("yyyy", value);
-            } else if (key.equals("MM")) {
-                // 月
-                resultMap.put("MM", value);
-            } else if (key.equals("dd")) {
-                // 日
-                resultMap.put("dd", value);
-            } else if (key.equals("HH")) {
-                // 时
-                resultMap.put("HH", value);
-            } else if (key.equals("mm")) {
-                // 分
-                resultMap.put("mm", value);
-            } else if (key.equals("ss")) {
-                // 秒
-                resultMap.put("ss", value);
-            } else if (key.equals("SSS")) {
-                // 秒
-                resultMap.put("SSS", value);
-            }
-            // ... 其他格式
-        }
-        return resultMap;
-    }
+//    public static Map<String, Object> parseDateString(String dateString,
+//                                                      String format) {
+//        Map<String, Object> resultMap = new HashMap<>();
+//
+//        String[] dateArr = dateString.split(SPLIT_DATETIME_FORMAT);
+//        String[] formatArr = format.split(SPLIT_DATETIME_FORMAT);
+//        for (int i = 0; i < formatArr.length; i++) {
+//            String key = formatArr[i];
+//            String value = dateArr[i];
+//            if (key.matches("y+")) {
+//                // 年
+//                resultMap.put("yyyy", value);
+//            } else if (key.equals("MM")) {
+//                // 月
+//                resultMap.put("MM", value);
+//            } else if (key.equals("dd")) {
+//                // 日
+//                resultMap.put("dd", value);
+//            } else if (key.equals("HH")) {
+//                // 时
+//                resultMap.put("HH", value);
+//            } else if (key.equals("mm")) {
+//                // 分
+//                resultMap.put("mm", value);
+//            } else if (key.equals("ss")) {
+//                // 秒
+//                resultMap.put("ss", value);
+//            } else if (key.equals("SSS")) {
+//                // 秒
+//                resultMap.put("SSS", value);
+//            }
+//            // ... 其他格式
+//        }
+//        return resultMap;
+//    }
 
 
     public DateTime233(long originalMs,
@@ -377,8 +386,14 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public DateTime233 plusMonths(int plusMonth) {
-        long nextMs = calculateOffsetMs(this.year, this.month + plusMonth, this.day, this.hour, this.minute, this.second,
-                this.millisSecond, this.offsetByTimeZoneMs);
+        long nextMs = calculateOffsetMs(this.year,
+                this.month + plusMonth,
+                this.day,
+                this.hour,
+                this.minute,
+                this.second,
+                this.millisSecond,
+                this.offsetByTimeZoneMs);
         return new DateTime233(nextMs, this.timeZone);
     }
 
@@ -646,7 +661,7 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     public String format(String formatStyle) {
         Map<String, Object> kv = paramContextMap();
         String newFormat = generateTemplate(formatStyle, kv);
-        return KvTemplateForDt.builder(newFormat)
+        return KvTemplate233.builder(newFormat)
                 .put(kv)
                 .build();
     }
