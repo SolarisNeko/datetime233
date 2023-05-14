@@ -1,8 +1,7 @@
 package com.neko233.datetime.constant;
 
-import com.neko233.datetime.DateTime233;
-
 /**
+ * 月份 & 月份的日期信息
  * @author SolarisNeko
  */
 public class Month233 {

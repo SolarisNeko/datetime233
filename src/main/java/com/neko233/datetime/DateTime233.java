@@ -9,6 +9,9 @@ import com.neko233.skilltree.commons.core.base.KvTemplate233;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -23,7 +26,7 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     }
 
     public long toMsFrom1970() {
-        return this.currentZoneTimeMs;
+        return this.zonedTimeMs;
     }
 
     public static class Constant {
@@ -41,18 +44,20 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
         public static final long MS_IN_1_DAY = 24L * 60 * 60 * 1000;
     }
 
-    /**
-     * 原始计算的毫秒数 | 0 时区
-     */
-    private final long originalMs;
+    // 0 时区下的毫秒数 from 1970-01-01 00:00:00
+    private final long originalTimeMs;
+    // 当前时区下的毫秒数 from 1970-01-01 00:00:00
+    private final long zonedTimeMs;
+
+    // 时区id. example = +8, +0
+    private final int timeZoneId;
+    // 时区导致的 timeMs 偏移毫秒数
+    private final int offsetByTimeZoneMs;
+    // 时区 by JDK
     private final TimeZone timeZone;
 
-    // 当前时区下的毫秒数
-    private final long currentZoneTimeMs;
 
-    // 时区偏移 ms
-    private final int offsetByTimeZoneMs;
-    private final int gmtZoneId;
+    // yyyy-MM-dd HH:mm:ss,SSS
     private final int year;
     private final int month;
     private final int day;
@@ -76,82 +81,93 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
         return new DateTime233(originalMs);
     }
 
-    private DateTime233(long originalMs) {
-        this(originalMs, TimeZone.getDefault());
+    /**
+     * @param jdkDate JDK-8 之前的 {@link java.util.Date}
+     * @return DateTime233
+     */
+    public static DateTime233 from(Date jdkDate) {
+        long originalTimeMs = jdkDate.getTime();
+        return DateTime233.of(originalTimeMs);
+    }
+
+
+    /**
+     * @param jdkDateTime JDK-8+ 的 {@link java.time.LocalDateTime}
+     * @return DateTime233
+     */
+    public static DateTime233 from(LocalDateTime jdkDateTime) {
+        final ZoneOffset offset = OffsetDateTime.now()
+                .getOffset();
+        long originalTimeMs = jdkDateTime.toInstant(offset)
+                .getEpochSecond() * 1000;
+        return DateTime233.of(originalTimeMs);
+    }
+
+    /**
+     * @param jdkZonedDateTime JDK-8+ 的时区日期时间 {@link java.time.ZonedDateTime}
+     * @return DateTime233
+     */
+    public static DateTime233 from(ZonedDateTime jdkZonedDateTime) {
+        long originalTimeMs = jdkZonedDateTime.toInstant()
+                .getEpochSecond() * 1000;
+        return DateTime233.of(originalTimeMs);
+    }
+
+    private DateTime233(long originalTimeMs) {
+        this(originalTimeMs,
+                TimeZone.getDefault());
     }
 
     public static DateTime233 of(String dateTimeText,
                                  String format) {
-        Map<String, String> map = TextTokenUtils.matchFullyToTokenMap(dateTimeText, format,
+        Map<String, String> map = TextTokenUtils.matchFullyToTokenMap(dateTimeText,
+                format,
                 DateTimeToken.DATE_TIME_TOKEN_LIST);
 
-        int year = Integer.parseInt(String.valueOf(map.getOrDefault("yyyy", "0")));
-        int month = Integer.parseInt(String.valueOf(map.getOrDefault("MM", "0")));
-        int day = Integer.parseInt(String.valueOf(map.getOrDefault("dd", "0")));
-        int hour = Integer.parseInt(String.valueOf(map.getOrDefault("HH", "0")));
-        int minute = Integer.parseInt(String.valueOf(map.getOrDefault("mm", "0")));
-        int second = Integer.parseInt(String.valueOf(map.getOrDefault("ss", "0")));
-        int millisSecond = Integer.parseInt(String.valueOf(map.getOrDefault("SSS", "0")));
+        int year = Integer.parseInt(String.valueOf(map.getOrDefault("yyyy",
+                "0")));
+        int month = Integer.parseInt(String.valueOf(map.getOrDefault("MM",
+                "0")));
+        int day = Integer.parseInt(String.valueOf(map.getOrDefault("dd",
+                "0")));
+        int hour = Integer.parseInt(String.valueOf(map.getOrDefault("HH",
+                "0")));
+        int minute = Integer.parseInt(String.valueOf(map.getOrDefault("mm",
+                "0")));
+        int second = Integer.parseInt(String.valueOf(map.getOrDefault("ss",
+                "0")));
+        int millisSecond = Integer.parseInt(String.valueOf(map.getOrDefault("SSS",
+                "0")));
 
-        return new DateTime233(year, month, day,
-                hour, minute, second,
+        return new DateTime233(year,
+                month,
+                day,
+                hour,
+                minute,
+                second,
                 millisSecond,
-                TimeZone.getDefault().getRawOffset()
+                TimeZone.getDefault()
+                        .getRawOffset()
         );
     }
 
-//    public static Map<String, Object> parseDateString(String dateString,
-//                                                      String format) {
-//        Map<String, Object> resultMap = new HashMap<>();
-//
-//        String[] dateArr = dateString.split(SPLIT_DATETIME_FORMAT);
-//        String[] formatArr = format.split(SPLIT_DATETIME_FORMAT);
-//        for (int i = 0; i < formatArr.length; i++) {
-//            String key = formatArr[i];
-//            String value = dateArr[i];
-//            if (key.matches("y+")) {
-//                // 年
-//                resultMap.put("yyyy", value);
-//            } else if (key.equals("MM")) {
-//                // 月
-//                resultMap.put("MM", value);
-//            } else if (key.equals("dd")) {
-//                // 日
-//                resultMap.put("dd", value);
-//            } else if (key.equals("HH")) {
-//                // 时
-//                resultMap.put("HH", value);
-//            } else if (key.equals("mm")) {
-//                // 分
-//                resultMap.put("mm", value);
-//            } else if (key.equals("ss")) {
-//                // 秒
-//                resultMap.put("ss", value);
-//            } else if (key.equals("SSS")) {
-//                // 秒
-//                resultMap.put("SSS", value);
-//            }
-//            // ... 其他格式
-//        }
-//        return resultMap;
-//    }
-
-
-    public DateTime233(long originalMs,
+    public DateTime233(long originalTimeMs,
                        TimeZone inputTimeZone) {
 
-        this.timeZone = Optional.ofNullable(inputTimeZone).orElse(TimeZone.getDefault());
+        this.timeZone = Optional.ofNullable(inputTimeZone)
+                .orElse(TimeZone.getDefault());
 
-        this.originalMs = originalMs;
+        this.originalTimeMs = originalTimeMs;
 
         // 时区加成 GMT offset
-        int gmtOffsetMs = TimeZone.getDefault().getRawOffset();
+        int gmtOffsetMs = TimeZone.getDefault()
+                .getRawOffset();
         this.offsetByTimeZoneMs = gmtOffsetMs;
-        this.gmtZoneId = Math.toIntExact(TimeUnit.MILLISECONDS.toHours(gmtOffsetMs));
+        this.timeZoneId = Math.toIntExact(TimeUnit.MILLISECONDS.toHours(gmtOffsetMs));
 
-        long gmtZoneMs = originalMs + gmtOffsetMs;
+        long gmtZoneMs = originalTimeMs + gmtOffsetMs;
 
-        this.currentZoneTimeMs = gmtZoneMs;
+        this.zonedTimeMs = gmtZoneMs;
 
 
         this.millisSecond = (int) (gmtZoneMs % 1000);
@@ -225,13 +241,19 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public int gmtZoneId() {
-        return this.gmtZoneId;
+        return this.timeZoneId;
     }
 
     @Override
     public DateTime233 toZeroClock() {
-        return new DateTime233(year, month, day,
-                0, 0, 0, 0, this.offsetByTimeZoneMs);
+        return new DateTime233(year,
+                month,
+                day,
+                0,
+                0,
+                0,
+                0,
+                this.offsetByTimeZoneMs);
     }
 
     @Override
@@ -241,8 +263,14 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public DateTime233 year(int year) {
-        return new DateTime233(year, month, day,
-                hour, minute, second, millisSecond, this.offsetByTimeZoneMs);
+        return new DateTime233(year,
+                month,
+                day,
+                hour,
+                minute,
+                second,
+                millisSecond,
+                this.offsetByTimeZoneMs);
     }
 
     @Override
@@ -254,8 +282,14 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     public DateTime233 month(int month) {
         DateTimeChecker233.isOkMonth(month);
 
-        return new DateTime233(year, month, day,
-                hour, minute, second, millisSecond, this.offsetByTimeZoneMs);
+        return new DateTime233(year,
+                month,
+                day,
+                hour,
+                minute,
+                second,
+                millisSecond,
+                this.offsetByTimeZoneMs);
     }
 
     @Override
@@ -265,10 +299,18 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public DateTime233 day(int day) {
-        DateTimeChecker233.isDayOk(this.year, this.month, this.day);
+        DateTimeChecker233.isDayOk(this.year,
+                this.month,
+                this.day);
 
-        return new DateTime233(year, month, day,
-                hour, minute, second, millisSecond, this.offsetByTimeZoneMs);
+        return new DateTime233(year,
+                month,
+                day,
+                hour,
+                minute,
+                second,
+                millisSecond,
+                this.offsetByTimeZoneMs);
     }
 
     @Override
@@ -280,8 +322,14 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     public DateTime233 hour(int hour) {
         DateTimeChecker233.isHourOk(hour);
 
-        return new DateTime233(year, month, day,
-                hour, minute, second, millisSecond, this.offsetByTimeZoneMs);
+        return new DateTime233(year,
+                month,
+                day,
+                hour,
+                minute,
+                second,
+                millisSecond,
+                this.offsetByTimeZoneMs);
     }
 
     @Override
@@ -293,8 +341,14 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     public DateTime233 minute(int minute) {
         DateTimeChecker233.isMinuteOk(minute);
 
-        return new DateTime233(year, month, day,
-                hour, minute, second, millisSecond, this.offsetByTimeZoneMs);
+        return new DateTime233(year,
+                month,
+                day,
+                hour,
+                minute,
+                second,
+                millisSecond,
+                this.offsetByTimeZoneMs);
     }
 
     @Override
@@ -306,8 +360,14 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     public DateTime233 second(int second) {
         DateTimeChecker233.isSecondOk(second);
 
-        return new DateTime233(year, month, day,
-                hour, minute, second, millisSecond, this.offsetByTimeZoneMs);
+        return new DateTime233(year,
+                month,
+                day,
+                hour,
+                minute,
+                second,
+                millisSecond,
+                this.offsetByTimeZoneMs);
     }
 
     @Override
@@ -318,8 +378,14 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public DateTime233 millisSecond(int millisSecond) {
-        return new DateTime233(year, month, day,
-                hour, minute, second, millisSecond, this.offsetByTimeZoneMs);
+        return new DateTime233(year,
+                month,
+                day,
+                hour,
+                minute,
+                second,
+                millisSecond,
+                this.offsetByTimeZoneMs);
     }
 
     @Override
@@ -330,8 +396,14 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     @Override
     public DateTime233 timeZone(int timeZoneHourId) {
         int timeZoneOffsetMs = TimeZone233.getZoneOffsetMs(timeZoneHourId);
-        return new DateTime233(year, month, day,
-                hour, minute, second, millisSecond, timeZoneOffsetMs);
+        return new DateTime233(year,
+                month,
+                day,
+                hour,
+                minute,
+                second,
+                millisSecond,
+                timeZoneOffsetMs);
     }
 
     /**
@@ -366,17 +438,26 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
             case 2:
                 return isLeapYear(year) ? 29 : 28;
             default:
-                throw new IllegalArgumentException(String.format("your year = %d, month = %d is error!", year, month));
+                throw new IllegalArgumentException(String.format("your year = %d, month = %d is error!",
+                        year,
+                        month));
         }
     }
 
     @Override
     public DateTime233 plusYears(int year) {
         int newYear = this.year + year;
-        long nextMs = calculateOffsetMs(newYear, this.month, this.day, this.hour, this.minute, this.second,
-                this.millisSecond, this.offsetByTimeZoneMs);
+        long nextMs = calculateOffsetMs(newYear,
+                this.month,
+                this.day,
+                this.hour,
+                this.minute,
+                this.second,
+                this.millisSecond,
+                this.offsetByTimeZoneMs);
 
-        return new DateTime233(nextMs, this.timeZone);
+        return new DateTime233(nextMs,
+                this.timeZone);
     }
 
     @Override
@@ -386,15 +467,30 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public DateTime233 plusMonths(int plusMonth) {
-        long nextMs = calculateOffsetMs(this.year,
-                this.month + plusMonth,
+        int finalMonth = this.month + plusMonth;
+
+        int resultMonth = (finalMonth - 1) % 12 + 1;
+
+        // 正数
+        int calcYear = (finalMonth - 1) / 12;
+        int resultYear = this.year + calcYear;
+
+        // 负数情况
+        if (resultMonth < 0) {
+            resultYear = resultYear - calcYear - 1;
+            resultMonth = 12 + resultMonth;
+        }
+
+        long nextMs = calculateOffsetMs(resultYear,
+                resultMonth,
                 this.day,
                 this.hour,
                 this.minute,
                 this.second,
                 this.millisSecond,
                 this.offsetByTimeZoneMs);
-        return new DateTime233(nextMs, this.timeZone);
+        return new DateTime233(nextMs,
+                this.timeZone);
     }
 
     @Override
@@ -405,8 +501,9 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public DateTime233 plusDays(int days) {
-        long newOriginMs = this.originalMs + TimeUnit.DAYS.toMillis(days);
-        return new DateTime233(newOriginMs, this.timeZone);
+        long newOriginMs = this.originalTimeMs + TimeUnit.DAYS.toMillis(days);
+        return new DateTime233(newOriginMs,
+                this.timeZone);
     }
 
     @Override
@@ -416,8 +513,9 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public DateTime233 plusHours(int hour) {
-        long newOriginMs = this.originalMs + TimeUnit.HOURS.toMillis(hour);
-        return new DateTime233(newOriginMs, this.timeZone);
+        long newOriginMs = this.originalTimeMs + TimeUnit.HOURS.toMillis(hour);
+        return new DateTime233(newOriginMs,
+                this.timeZone);
     }
 
     @Override
@@ -427,8 +525,9 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public DateTime233 plusMinutes(int minute) {
-        long newOriginMs = this.originalMs + TimeUnit.MINUTES.toMillis(minute);
-        return new DateTime233(newOriginMs, this.timeZone);
+        long newOriginMs = this.originalTimeMs + TimeUnit.MINUTES.toMillis(minute);
+        return new DateTime233(newOriginMs,
+                this.timeZone);
     }
 
     @Override
@@ -438,8 +537,9 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public DateTime233 plusSeconds(int second) {
-        long newOriginMs = this.originalMs + TimeUnit.SECONDS.toMillis(second);
-        return new DateTime233(newOriginMs, this.timeZone);
+        long newOriginMs = this.originalTimeMs + TimeUnit.SECONDS.toMillis(second);
+        return new DateTime233(newOriginMs,
+                this.timeZone);
     }
 
     @Override
@@ -449,8 +549,9 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public DateTime233 plusMillisSecond(int millisSecond) {
-        long newOriginMs = this.originalMs + millisSecond;
-        return new DateTime233(newOriginMs, this.timeZone);
+        long newOriginMs = this.originalTimeMs + millisSecond;
+        return new DateTime233(newOriginMs,
+                this.timeZone);
     }
 
     @Override
@@ -459,11 +560,11 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     }
 
     public long originalTimeMs() {
-        return this.originalMs;
+        return this.originalTimeMs;
     }
 
     public long zoneTimeMs() {
-        return this.currentZoneTimeMs;
+        return this.zonedTimeMs;
     }
 
 
@@ -480,7 +581,12 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
      * @return 转换为 JDK 的 DateTime
      */
     public LocalDateTime toLocalDateTime() {
-        return LocalDateTime.of(year, month, day, hour, minute, second);
+        return LocalDateTime.of(year,
+                month,
+                day,
+                hour,
+                minute,
+                second);
     }
 
     /**
@@ -503,9 +609,10 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
                                          int millisSecond,
                                          int zoneOffsetMs
     ) {
-        int offsetYear = Math.max(0, year - Constant.START_YEAR_NUMBER);
+        int offsetYear = Math.max(0,
+                year - Constant.START_YEAR_NUMBER);
         int toCalcLeapYear = offsetYear + 1;
-        // year's day count
+        // year's day count = 4/400 闰年, 100 非闰年
         long totalElapsedDays = offsetYear * 365L + toCalcLeapYear / 4 - toCalcLeapYear / 100 + toCalcLeapYear / 400;
 
         // month's day count
@@ -513,12 +620,15 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
             totalElapsedDays++;
         }
         // 此处不需要考虑闰年 +1 day, year done
-        for (int i = 0; i < Math.min(month - 1, MAX_MONTH_COUNT); i++) {
+        int minMonth = Math.min(month - 1,
+                MAX_MONTH_COUNT);
+        for (int i = 0; i < minMonth; i++) {
             totalElapsedDays += Month233.DAYS_IN_MONTH_ARRAY[i];
         }
         // just day count
         totalElapsedDays += day - 1;
 
+        // 3124137600000,
         long totalMs = TimeUnit.DAYS.toMillis(totalElapsedDays)
                 + TimeUnit.HOURS.toMillis(hour)
                 + TimeUnit.MINUTES.toMillis(minute)
@@ -530,12 +640,12 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public int weekDay() {
-        return DateTime233.weekDay(this.currentZoneTimeMs);
+        return DateTime233.weekDay(this.zonedTimeMs);
     }
 
     @Override
     public int whichYear() {
-        return DateTime233.whichYear(this.currentZoneTimeMs);
+        return DateTime233.whichYear(this.zonedTimeMs);
     }
 
     private static int whichYear(long zoneMs) {
@@ -559,7 +669,7 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
      */
     @Override
     public int dayOfYear() {
-        return dayOfYear(this.currentZoneTimeMs);
+        return dayOfYear(this.zonedTimeMs);
     }
 
     public static int dayOfYear(long zoneMs) {
@@ -578,7 +688,8 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
         int month = 1;
         int numDays = 0;
         while (true) {
-            int daysInMonth = getDaysInMonth(year, month);
+            int daysInMonth = getDaysInMonth(year,
+                    month);
             if (timeMs < daysInMonth * 86400000L) {
                 break;
             }
@@ -606,7 +717,8 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
         int tempDayOfMonth = dayOfYears;
         int month = 1;
         while (true) {
-            int fixedDayInMonth = getDaysInMonth(year, month);
+            int fixedDayInMonth = getDaysInMonth(year,
+                    month);
             if (tempDayOfMonth < fixedDayInMonth) {
                 break;
             }
@@ -660,7 +772,8 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     @NotNull
     public String format(String formatStyle) {
         Map<String, Object> kv = paramContextMap();
-        String newFormat = generateTemplate(formatStyle, kv);
+        String newFormat = generateTemplate(formatStyle,
+                kv);
         return KvTemplate233.builder(newFormat)
                 .put(kv)
                 .build();
@@ -668,14 +781,15 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     @Override
     public Date toDate() {
-        return new Date(this.originalMs);
+        return new Date(this.originalTimeMs);
     }
 
     private static String generateTemplate(String formatStyle,
                                            Map<String, ? extends Object> kv) {
         String newFormat = formatStyle;
         for (String s : kv.keySet()) {
-            newFormat = newFormat.replaceAll(s, "\\${" + s + "}");
+            newFormat = newFormat.replaceAll(s,
+                    "\\${" + s + "}");
         }
         return newFormat;
     }
@@ -683,13 +797,27 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
 
     private Map<String, Object> paramContextMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put("yyyy", String.format("%04d", this.year));
-        map.put("MM", String.format("%02d", this.month));
-        map.put("dd", String.format("%02d", this.day));
-        map.put("HH", String.format("%02d", this.hour));
-        map.put("mm", String.format("%02d", this.minute));
-        map.put("ss", String.format("%02d", this.second));
-        map.put("SSS", String.format("%03d", this.millisSecond));
+        map.put("yyyy",
+                String.format("%04d",
+                        this.year));
+        map.put("MM",
+                String.format("%02d",
+                        this.month));
+        map.put("dd",
+                String.format("%02d",
+                        this.day));
+        map.put("HH",
+                String.format("%02d",
+                        this.hour));
+        map.put("mm",
+                String.format("%02d",
+                        this.minute));
+        map.put("ss",
+                String.format("%02d",
+                        this.second));
+        map.put("SSS",
+                String.format("%03d",
+                        this.millisSecond));
         return map;
     }
 

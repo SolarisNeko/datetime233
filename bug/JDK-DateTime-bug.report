@@ -1,0 +1,16 @@
+3124137600000 毫秒表示的时间距离 1970 年 1 月 1 日 0 点 0 分 0 秒过去了多少毫秒，可以通过将其转换为一个 Instant 对象，并使用 atZone 方法将其转换为一个 ZonedDateTime 对象，然后通过 toLocalDate 方法获取其对应的 LocalDate 对象，最后通过 toEpochDay 方法获取其对应的从 1970 年 1 月 1 日开始过去的天数。
+
+代码示例：
+
+java
+Copy code
+long timestamp = 3124137600000L;
+Instant instant = Instant.ofEpochMilli(timestamp);
+ZonedDateTime zonedDateTime = instant.atZone(ZoneId.systemDefault());
+LocalDate localDate = zonedDateTime.toLocalDate();
+long days = localDate.toEpochDay();
+System.out.println(days); // 输出 36159
+因此，3124137600000 毫秒表示的时间对应的日期是 2068 年 12 月 31 日，距离 1970 年 1 月 1 日过去了 36159 天。
+
+目标: 2068-12-31 00:00:00
+JDK-DateTime 输出: 2069-01-01-01
