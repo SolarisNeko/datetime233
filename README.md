@@ -1,5 +1,9 @@
 # DateTime233 | Simplify Your Date and Time Operations
 
+![DateTime233](./datetime233-logo-v1.png)
+
+
+
 # Slogan
 Tired of dealing with the limitations of LocalDateTime and Date objects? DateTime233 provides extensive functionality and eliminates the need for excessive customizations.
 
@@ -46,7 +50,7 @@ To make the most of DateTime233, familiarize yourself with the following terms a
 4. Period: A time interval specified by a start and end timestamp. 
 5. refreshMs: The time interval between period refreshes, typically measured in milliseconds.
 
---- 
+---
 
 1. originTimeMs = millis second = 毫秒, 从 1970-01-01 00:00:00 至今 
 2. zoneTimeMs = zone time ms = 时区下的毫秒, 从 1970-01-01 00:00:00 至今 
