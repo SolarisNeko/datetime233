@@ -31,33 +31,32 @@ implementation("com.neko233:datetime233:0.0.8")
 Latest supported versions:
 
 JDK 8 = 0.0.8
+
 JDK 11 = 0.0.8
+
 JDK 17 = 0.0.8
 
 ## Key Terminology | 术语
 
 To make the most of DateTime233, familiarize yourself with the following terms and concepts:
 
-originTimeMs: Milliseconds since January 1, 1970, representing the original time.
-zoneTimeMs: Milliseconds in the current time zone since January 1, 1970.
-DateTime: A date and time represented in the format "yyyy-MM-dd HH:mm:ss."
-Period: A time interval specified by a start and end timestamp.
-refreshMs: The time interval between period refreshes, typically measured in milliseconds.
+1. originTimeMs: Milliseconds since January 1, 1970, representing the original time. 
+2. zoneTimeMs: Milliseconds in the current time zone since January 1, 1970. 
+3. DateTime: A date and time represented in the format "yyyy-MM-dd HH:mm:ss."
+4. Period: A time interval specified by a start and end timestamp. 
+5. refreshMs: The time interval between period refreshes, typically measured in milliseconds.
 
 --- 
 
-originTimeMs = millis second = 毫秒, 从 1970-01-01 00:00:00 至今
-
-zoneTimeMs = zone time ms = 时区下的毫秒, 从 1970-01-01 00:00:00 至今
-
-DateTime = yyyy-MM-dd HH:mm:ss 组成的日期时间
-
-Period = 周期 = [start, endMs] -> {startMs, endMs, expireMs, refreshMs}
-
-refreshMs = period refresh by refreshMs / time, like 100ms refresh , in 1 s have 10 refresh count.
+1. originTimeMs = millis second = 毫秒, 从 1970-01-01 00:00:00 至今 
+2. zoneTimeMs = zone time ms = 时区下的毫秒, 从 1970-01-01 00:00:00 至今 
+3. DateTime = yyyy-MM-dd HH:mm:ss 组成的日期时间 
+4. Period = 周期 = [start, endMs] -> {startMs, endMs, expireMs, refreshMs} 
+5. RefreshMs = period refresh by refreshMs / time, like 100ms refresh , in 1 s have 10 refresh count.
 
 
 # Seamless Integration
+
 DateTime233 seamlessly connects with LocalDateTime and Date objects, eliminating the need for extensive custom packaging.
 
 DateTime233 可无缝连接 LocalDateTime 和 Date 对象，省去了繁琐的自定义封装。
