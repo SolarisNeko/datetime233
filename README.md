@@ -85,13 +85,6 @@ DateTime233 is licensed under Apache 2.0.
 implementation group: 'com.neko233', name: 'datetime233', version: '0.0.8'
 ```
 
-## 初衷 / 痛点
-
-Enough of DateTime/Date, to do a lot of their own packaging. And there are few functions that are supported.
-
-受够了 LocalDateTime, Date 的局限性, 要做大量自己的封装. 并且支持的功能还很少. 
-
-
 # Code 
 
 ## Java
