@@ -1,5 +1,14 @@
 # RoadMap
 
+
+## v1.0.0
+正式发布 v1.0.0
+1. [Add] diff 支持 year,month,day,hour,minute,second,ms
+2. [Add] 完善了一些 API style 命名 (非核心都改成 getter style)
+3. [add] 追加 DateTimeUnit
+4. [Add] test unit
+
+
 ## v0.0.8
 1. [BugFix] 修复了一些百年后的计算问题
 2. [Add] 追加覆盖更全面的单元测试, 设计 plus/minus 时间单位
