@@ -20,4 +20,5 @@ public class Month233 {
      */
     public static final int MAX_MONTH = 12;
 
+    public static final int COUNT_FOR_MONTH = 12;
 }

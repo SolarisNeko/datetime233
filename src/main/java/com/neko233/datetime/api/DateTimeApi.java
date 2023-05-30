@@ -1,6 +1,9 @@
 package com.neko233.datetime.api;
 
 
+import com.neko233.datetime.constant.DateTimeUnit;
+import com.neko233.datetime.constant.Month233;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
@@ -27,7 +30,7 @@ public interface DateTimeApi<T extends DateTimeApi<?>> {
     /**
      * @return 当前时区
      */
-    TimeZone timeZone();
+    TimeZone getTimeZone();
 
     /**
      * @return 转为 JDK DateTime
@@ -37,14 +40,17 @@ public interface DateTimeApi<T extends DateTimeApi<?>> {
     /**
      * @return 星期几 ?
      */
-    int weekDay();
+    int getWeekDay();
 
-    int whichYear();
+    /**
+     * @return 哪一年
+     */
+    int getWhichYear();
 
     /**
      * @return 一年中的第几天
      */
-    int dayOfYear();
+    int getDayOfYear();
 
     /**
      * 闰年 = 4, 100, 400 年/次 + 1 day
@@ -59,14 +65,14 @@ public interface DateTimeApi<T extends DateTimeApi<?>> {
     long toMsFrom1970();
 
     /**
-     * @return 时区偏移毫秒数
+     * @return default utc 时区偏移毫秒数
      */
-    int gmtOffsetMs();
+    int getOffsetMs();
 
     /**
      * @return 时区id
      */
-    int gmtZoneId();
+    int getZoneId();
 
     /**
      * @return 年
@@ -153,7 +159,7 @@ public interface DateTimeApi<T extends DateTimeApi<?>> {
      * @param timeZoneOffsetHourId 时区偏移, 小时id. 例如 +8 时区 = 8, -8 时区 = -8
      * @return new
      */
-    T timeZone(int timeZoneOffsetHourId);
+    T getTimeZone(int timeZoneOffsetHourId);
 
     T plusYears(int year);
 
@@ -234,7 +240,8 @@ public interface DateTimeApi<T extends DateTimeApi<?>> {
      * @param timeUnit 提供时间格式
      * @return 该格式的时间差
      */
-    default long diff(T other, TimeUnit timeUnit) {
+    default long diffByTimeUnit(T other,
+                                TimeUnit timeUnit) {
         if (other == null || timeUnit == null) {
             return 0L;
         }
@@ -242,13 +249,54 @@ public interface DateTimeApi<T extends DateTimeApi<?>> {
         return timeUnit.convert(diffMs, TimeUnit.MILLISECONDS);
     }
 
+
+    /**
+     * 只返回绝对值
+     *
+     * @param other        其他
+     * @param dateTimeUnit 单位
+     * @return 数值
+     */
+    default long diff(T other,
+                      DateTimeUnit dateTimeUnit) {
+        if (other == null || dateTimeUnit == null) {
+            return 0L;
+        }
+        TimeUnit jdkTimeUnit = dateTimeUnit.getConverTimeUnit();
+        if (jdkTimeUnit != null) {
+            return diffAbsByTimeUnit(other, jdkTimeUnit);
+        }
+
+        // 年
+        int yearDiffCount = Math.abs(other.year() - this.year());
+        if (dateTimeUnit == DateTimeUnit.YEAR) {
+            return yearDiffCount;
+        }
+        // 月
+        if (dateTimeUnit == DateTimeUnit.MONTH) {
+            int thisMonth = this.month();
+            int otherMonth = other.month();
+
+            int diffYear = Math.min(this.year(), other.year());
+
+            int thisCalcYear = this.year() - diffYear;
+            int otherCalcYear = other.year() - diffYear;
+            int thisMonthValue = thisCalcYear * Month233.COUNT_FOR_MONTH + thisMonth;
+            int otherMonthValue = otherCalcYear * Month233.COUNT_FOR_MONTH + otherMonth;
+
+            return Math.abs(otherMonthValue - thisMonthValue);
+        }
+        return 0L;
+    }
+
     /**
      * @param other    dateTime233
      * @param timeUnit 提供时间格式
      * @return 该格式的时间差, 绝对值
      */
-    default long diffAbs(T other, TimeUnit timeUnit) {
-        return Math.abs(diff(other, timeUnit));
+    default long diffAbsByTimeUnit(T other,
+                                   TimeUnit timeUnit) {
+        return Math.abs(diffByTimeUnit(other, timeUnit));
     }
 
 

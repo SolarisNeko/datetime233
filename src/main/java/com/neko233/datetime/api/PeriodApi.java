@@ -71,7 +71,7 @@ public interface PeriodApi {
         long tempMs = getStartMs();
         while (tempMs < getEndMs()) {
             DateTime233 of = DateTime233.ofZeroClock(tempMs);
-            int weekday = of.weekDay();
+            int weekday = of.getWeekDay();
             if (weekday == 6) {
                 dateTime233List.add(of);
                 tempMs += TimeUnit.DAYS.toMillis(1);
