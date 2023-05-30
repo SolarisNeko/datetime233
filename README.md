@@ -1,15 +1,23 @@
-# DateTime233
+# DateTime233 | Simplify Your Date and Time Operations
+
+![DateTime233](./datetime233-logo-v1.png)
 
 
 
-## Introduce | 简介
+# Slogan
+Tired of dealing with the limitations of LocalDateTime and Date objects? DateTime233 provides extensive functionality and eliminates the need for excessive customizations.
 
-This is a zero-start design DateTime Utils, used to flux DateTime233 API.
+厌倦了局限性强的 LocalDateTime 和 Date 对象？DateTime233 提供了丰富的功能，无需进行繁琐的自定义。
 
-从 0 开始设计的 DateTime 工具, flux-style DateTime233 API.
+## Introduction
+DateTime233 is a powerful and intuitive DateTime utility that simplifies working with dates and times. Designed from scratch with a flux-style architecture, it seamlessly integrates with the DateTime233 API.
 
-## Use
-### maven
+DateTime233 是一个强大且直观的日期和时间工具，简化了日期和时间操作。从零开始设计的，采用流式架构，与 DateTime233 API 无缝衔接。
+
+从 0 开始设计的 DateTime233, 提供可并发的一体化 DateTime 操作. 
+
+# Easy Integration
+## maven
 ```xml
 <dependency>
     <groupId>com.neko233</groupId>
@@ -17,14 +25,14 @@ This is a zero-start design DateTime Utils, used to flux DateTime233 API.
     <version>0.0.8</version>
 </dependency>
 ```
-### gradle
+## gradle
 ```kotlin
 implementation("com.neko233:datetime233:0.0.8")
+
 ```
 
-## Support JDK | JDK 版本支持
-
-latest support version: 
+## JDK Compatibility | JDK 版本支持
+Latest supported versions:
 
 JDK 8 = 0.0.8
 
@@ -32,27 +40,34 @@ JDK 11 = 0.0.8
 
 JDK 17 = 0.0.8
 
-## Terminology 术语/概念须知
+## Key Terminology | 术语
 
-originTimeMs = millis second = 毫秒, 从 1970-01-01 00:00:00 至今
+To make the most of DateTime233, familiarize yourself with the following terms and concepts:
 
-zoneTimeMs = zone time ms = 时区下的毫秒, 从 1970-01-01 00:00:00 至今
+1. originTimeMs: Milliseconds since January 1, 1970, representing the original time. 
+2. zoneTimeMs: Milliseconds in the current time zone since January 1, 1970. 
+3. DateTime: A date and time represented in the format "yyyy-MM-dd HH:mm:ss."
+4. Period: A time interval specified by a start and end timestamp. 
+5. refreshMs: The time interval between period refreshes, typically measured in milliseconds.
 
-DateTime = yyyy-MM-dd HH:mm:ss 组成的日期时间
+---
 
-Period = 周期 = [start, endMs] -> {startMs, endMs, expireMs, refreshMs}
+1. originTimeMs = millis second = 毫秒, 从 1970-01-01 00:00:00 至今 
+2. zoneTimeMs = zone time ms = 时区下的毫秒, 从 1970-01-01 00:00:00 至今 
+3. DateTime = yyyy-MM-dd HH:mm:ss 组成的日期时间 
+4. Period = 周期 = [start, endMs] -> {startMs, endMs, expireMs, refreshMs} 
+5. RefreshMs = period refresh by refreshMs / time, like 100ms refresh , in 1 s have 10 refresh count.
 
-refreshMs = period refresh by refreshMs / time, like 100ms refresh , in 1 s have 10 refresh count.
 
+# Seamless Integration
 
+DateTime233 seamlessly connects with LocalDateTime and Date objects, eliminating the need for extensive custom packaging.
 
-### 介绍
+DateTime233 可无缝连接 LocalDateTime 和 Date 对象，省去了繁琐的自定义封装。
 
-DateTime233 is a flux-style utils, He can connect LocalDateTime/Date seamlessly.
+# License
 
-无缝衔接 JDK LocalDateTime 和 Date
-
-License 为 Apache2.0
+DateTime233 is licensed under Apache 2.0.
 
 ## Download
 
@@ -73,13 +88,6 @@ License 为 Apache2.0
 ```groovy
 implementation group: 'com.neko233', name: 'datetime233', version: '0.0.8'
 ```
-
-## 初衷 / 痛点
-
-Enough of DateTime/Date, to do a lot of their own packaging. And there are few functions that are supported.
-
-受够了 LocalDateTime, Date 的局限性, 要做大量自己的封装. 并且支持的功能还很少. 
-
 
 # Code 
 
@@ -107,6 +115,7 @@ import static org.junit.Assert.assertThrows;
  */
 public class DateTime233Test {
 
+    // for java localDateTime / Date
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
 
