@@ -1,5 +1,10 @@
 # RoadMap
 
+## v1.0.1
+1. [Add] 完善了 DateTime API
+2. [Add] 重新设计了一下 Period233, PeriodDad233 (原 PeriodDaddy233), 修改为无状态+深拷贝风格, 避免引用问题
+3. [Add] 增加单元测试
+4. [Bugfix] JDK LocalDateTime 可能引发的一些 async bug 处理
 
 ## v1.0.0
 正式发布 v1.0.0
