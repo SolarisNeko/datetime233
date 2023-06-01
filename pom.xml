@@ -5,7 +5,7 @@
 
     <groupId>com.neko233</groupId>
     <artifactId>datetime233</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>datetime233</name>
     <url>https://github.com/SolarisNeko/datetime233/tree/main</url>
@@ -48,7 +48,6 @@
     <dependencies>
 
 
-
         <!-- Util -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -61,7 +60,7 @@
         <dependency>
             <groupId>com.neko233</groupId>
             <artifactId>skilltree-commons-core</artifactId>
-            <version>0.0.3</version>
+            <version>0.0.6</version>
         </dependency>
 
         <!-- Test -->

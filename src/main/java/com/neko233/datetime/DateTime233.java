@@ -5,6 +5,8 @@ import com.neko233.datetime.constant.DateTimeToken;
 import com.neko233.datetime.constant.Month233;
 import com.neko233.datetime.timezone.TimeZone233;
 import com.neko233.datetime.utils.TextTokenUtils;
+import com.neko233.skilltree.commons.core.annotation.Nullable;
+import com.neko233.skilltree.commons.core.base.AssertUtils233;
 import com.neko233.skilltree.commons.core.base.KvTemplate233;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,7 +76,7 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
      *
      * @param timeZone 时区
      */
-    public static void setDefaultTimeZone(TimeZone timeZone) {
+    public static void setDefaultTimeZone(@Nullable TimeZone timeZone) {
         if (timeZone == null) {
             throw new IllegalArgumentException("默认时区不允许为空! 修改失败! fail.");
         }
@@ -99,7 +101,8 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
      * @param jdkDate JDK-8 之前的 {@link java.util.Date}
      * @return DateTime233
      */
-    public static DateTime233 from(Date jdkDate) {
+    public static DateTime233 from(@Nullable Date jdkDate) {
+        AssertUtils233.isNotNull(jdkDate, "your Date can not be null! NPE");
         long originalTimeMs = jdkDate.getTime();
         return DateTime233.of(originalTimeMs);
     }
@@ -109,7 +112,9 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
      * @param jdkDateTime JDK-8+ 的 {@link java.time.LocalDateTime}
      * @return DateTime233
      */
-    public static DateTime233 from(LocalDateTime jdkDateTime) {
+    public static DateTime233 from(@Nullable LocalDateTime jdkDateTime) {
+        AssertUtils233.isNotNull(jdkDateTime, "your jdkDateTime can not be null! NPE");
+
         final ZoneOffset offset = OffsetDateTime.now()
                 .getOffset();
         long originalTimeMs = jdkDateTime.toInstant(offset)
@@ -118,7 +123,7 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     }
 
     /**
-     * @param jdkZonedDateTime JDK-8+ 的时区日期时间 {@link java.time.ZonedDateTime}
+     * @param jdkZonedDateTime JDK 8+ 版本, 的时区日期时间 {@link java.time.ZonedDateTime}
      * @return DateTime233
      */
     public static DateTime233 from(ZonedDateTime jdkZonedDateTime) {
@@ -572,11 +577,13 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
         return this.plusMillisSecond(-millisSecond);
     }
 
-    public long originalTimeMs() {
+    @Override
+    public long getOriginalTimeMs() {
         return this.originalTimeMs;
     }
 
-    public long zoneTimeMs() {
+    @Override
+    public long getZoneTimeMs() {
         return this.zonedTimeMs;
     }
 

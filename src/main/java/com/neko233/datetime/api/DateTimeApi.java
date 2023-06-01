@@ -20,12 +20,22 @@ public interface DateTimeApi<T extends DateTimeApi<?>> {
      *
      * @return 无时区偏移的 time ms | 如 UTC+0 时区 ms
      */
-    long originalTimeMs();
+    default long originalTimeMs() {
+        return getOriginalTimeMs();
+    }
+
+
+    long getOriginalTimeMs();
 
     /**
      * @return 带时区偏移后的 time ms
      */
-    long zoneTimeMs();
+    default long zoneTimeMs() {
+       return getZoneTimeMs();
+    }
+
+
+    long getZoneTimeMs();
 
     /**
      * @return 当前时区

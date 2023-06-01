@@ -14,7 +14,19 @@ import java.util.stream.Collectors;
  */
 public class Period233Test {
 
+    @Test
+    public void isInPeriod() {
+        DateTime233 of = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        DateTime233 end = DateTime233.of("2024-01-01", "yyyy-MM-dd");
+        Period233 between = Period233.between(of, end);
 
+        DateTime233 of1 = DateTime233.of("2023-01-01", "yyyy-MM-dd");
+        long currentMs = of1.originalTimeMs();
+        long currentZoneMs = of1.zoneTimeMs();
+
+        Assert.assertTrue(between.isInPeriod(currentMs));
+        Assert.assertTrue(between.isInPeriod(currentZoneMs));
+    }
 
     @Test
     public void getAllWeekends() {
@@ -37,7 +49,7 @@ public class Period233Test {
         DateTime233 end = DateTime233.of("2024-01-01", "yyyy-MM-dd");
         Period233 between = Period233.between(of, end);
 
-        PeriodDaddy233 periodDaddy = between.splitByFixTimeStep(1, TimeUnit.DAYS);
+        PeriodDad233 periodDaddy = between.toPeriodDad(1, TimeUnit.DAYS);
         int childPeriodCount = periodDaddy.getChildPeriodCount();
 
         Assert.assertEquals(365, childPeriodCount);
@@ -49,7 +61,7 @@ public class Period233Test {
         DateTime233 end = DateTime233.of("2024-01-01", "yyyy-MM-dd");
         Period233 between = Period233.between(of, end);
 
-        PeriodDaddy233 periodsChain = between.generateDynamicPeriod((count) -> {
+        PeriodDad233 periodsChain = between.generateDynamicPeriod((count) -> {
             return count * TimeUnit.DAYS.toMillis(1);
         }, (count) -> {
             return 0L;
@@ -67,7 +79,7 @@ public class Period233Test {
         DateTime233 end = DateTime233.of("2024-01-01", "yyyy-MM-dd");
         Period233 between = Period233.between(of, end);
 
-        PeriodDaddy233 periodsDad = between.splitByFixTimeStep(30, TimeUnit.DAYS, 30, TimeUnit.DAYS);
+        PeriodDad233 periodsDad = between.toPeriodDad(30, TimeUnit.DAYS, 30, TimeUnit.DAYS);
         periodsDad.forEach(period -> {
             DateTime233 startDt = DateTime233.of(period.getStartMs());
             DateTime233 endDt = DateTime233.of(period.getEndMs());
