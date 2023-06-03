@@ -1,30 +1,42 @@
 # DateTime233 | Simplify Your Date and Time Operations
 
 ## Introduction
-DateTime233 is a powerful and intuitive DateTime utility that simplifies working with dates and times. Designed from scratch with a flux-style architecture, it seamlessly integrates with the DateTime233 API.
 
-DateTime233 是一个强大且直观的日期和时间工具，简化了日期和时间操作。
+DateTime233 is a powerful and intuitive DateTime utility that simplifies working with dates and times. Designed from
+scratch with a flux-style architecture, it seamlessly integrates with the DateTime233 API.
 
-从零开始设计的，采用流式风格，与 JDK Date/LocalDateTime 无缝衔接。
+DateTime233 是一个从 0 开始设计的强大且直观的日期和时间工具，采用流式 DateTime 风格简化了日期和时间操作, 提供可并发的一体化
+DateTime 操作.
 
-从 0 开始设计的 DateTime233, 提供可并发的一体化 DateTime 操作. 
+并且与 JDK Date / LocalDateTime / millisSeconds 无缝衔接。
+
+能力:
+
+1. DateTime 日期时间
+2. Period 周期
 
 # Easy Integration
+
 ## maven
+
 ```xml
+
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>datetime233</artifactId>
     <version>1.0.1</version>
 </dependency>
 ```
+
 ## gradle
+
 ```kotlin
 implementation("com.neko233:datetime233:1.0.1")
 
 ```
 
 ## JDK Compatibility | JDK 版本支持
+
 Latest supported versions:
 
 JDK 8 = 1.0.1
@@ -37,24 +49,24 @@ JDK 17 = 1.0.1
 
 To make the most of DateTime233, familiarize yourself with the following terms and concepts:
 
-1. originTimeMs: Milliseconds since January 1, 1970, representing the original time. 
-2. zoneTimeMs: Milliseconds in the current time zone since January 1, 1970. 
+1. originTimeMs: Milliseconds since January 1, 1970, representing the original time.
+2. zoneTimeMs: Milliseconds in the current time zone since January 1, 1970.
 3. DateTime: A date and time represented in the format "yyyy-MM-dd HH:mm:ss."
-4. Period: A time interval specified by a start and end timestamp. 
+4. Period: A time interval specified by a start and end timestamp.
 5. refreshMs: The time interval between period refreshes, typically measured in milliseconds.
 
 ---
 
-1. originTimeMs = millis second = 毫秒, 从 1970-01-01 00:00:00 至今 
-2. zoneTimeMs = zone time ms = 时区下的毫秒, 从 1970-01-01 00:00:00 至今 
-3. DateTime = yyyy-MM-dd HH:mm:ss 组成的日期时间 
-4. Period = 周期 = [start, endMs] -> {startMs, endMs, expireMs, refreshMs} 
+1. originTimeMs = millis second = 毫秒, 从 1970-01-01 00:00:00 至今
+2. zoneTimeMs = zone time ms = 时区下的毫秒, 从 1970-01-01 00:00:00 至今
+3. DateTime = yyyy-MM-dd HH:mm:ss 组成的日期时间
+4. Period = 周期 = [start, endMs] -> {startMs, endMs, expireMs, refreshMs}
 5. RefreshMs = period refresh by refreshMs / time, like 100ms refresh , in 1 s have 10 refresh count.
-
 
 # Seamless Integration
 
-DateTime233 seamlessly connects with LocalDateTime and Date objects, eliminating the need for extensive custom packaging.
+DateTime233 seamlessly connects with LocalDateTime and Date objects, eliminating the need for extensive custom
+packaging.
 
 DateTime233 可无缝连接 LocalDateTime 和 Date 对象，省去了繁琐的自定义封装。
 
@@ -82,10 +94,12 @@ DateTime233 is licensed under Apache 2.0.
 implementation group: 'com.neko233', name: 'datetime233', version: '1.0.1'
 ```
 
-# Code 
+# Code
 
 ## Java
+
 ### DateTime233  日期时间
+
 ```java
 
 import org.jetbrains.annotations.NotNull;
@@ -140,7 +154,10 @@ public class DateTime233Test {
             int weekDay = dateTime233.weekDay();
 
             if (jdkWeekDay != weekDay) {
-                String format = String.format("jdkWeek = %s, dateTime233 week = %s, dateTime = %s", jdkWeekDay, weekDay, dateTime233);
+                String format = String.format("jdkWeek = %s, dateTime233 week = %s, dateTime = %s",
+                        jdkWeekDay,
+                        weekDay,
+                        dateTime233);
                 System.err.println(format);
                 Assert.fail();
             }
@@ -491,7 +508,8 @@ public class DateTime233Test {
 }
 ```
 
-### Period233 周期 
+### Period233 周期
+
 ```java
 
 
@@ -508,7 +526,6 @@ import java.util.stream.Collectors;
  * Date on 2023-04-25
  */
 public class Period233Test {
-
 
 
     @Test
@@ -576,4 +593,5 @@ public class Period233Test {
 ```
 
 # Pic
+
 ![DateTime233](./datetime233-logo-v1.png)
