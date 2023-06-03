@@ -1,14 +1,5 @@
 # DateTime233 | Simplify Your Date and Time Operations
 
-
-
-
-
-# Slogan
-Tired of dealing with the limitations of LocalDateTime and Date objects? DateTime233 provides extensive functionality and eliminates the need for excessive customizations.
-
-厌倦了局限性强的 LocalDateTime 和 Date 对象？DateTime233 提供了丰富的功能，无需进行繁琐的自定义。
-
 ## Introduction
 DateTime233 is a powerful and intuitive DateTime utility that simplifies working with dates and times. Designed from scratch with a flux-style architecture, it seamlessly integrates with the DateTime233 API.
 
