@@ -5,6 +5,8 @@ import com.neko233.datetime.constant.DateTimeToken;
 import com.neko233.datetime.constant.Month233;
 import com.neko233.datetime.timezone.TimeZone233;
 import com.neko233.datetime.utils.TextTokenUtils;
+import com.neko233.skilltree.commons.core.annotation.Nullable;
+import com.neko233.skilltree.commons.core.base.AssertUtils233;
 import com.neko233.skilltree.commons.core.base.KvTemplate233;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,12 +16,15 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DateTime233 implements DateTimeApi<DateTime233> {
 
+    // 可以自定义修改成【统一的默认时区】
+    private static final AtomicReference<TimeZone> DEFAULT_TIME_ZONE = new AtomicReference<>(TimeZone.getDefault());
+
 
     public static final int MAX_MONTH_COUNT = 12;
-    public static final String SPLIT_DATETIME_FORMAT = "[.,/\\-?_\\s:]";
 
     public boolean isLearYear() {
         return DateTime233.isLeapYear(this.year);
@@ -66,6 +71,17 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     private final int second;
     private final int millisSecond;
 
+    /**
+     * 修改默认时区
+     *
+     * @param timeZone 时区
+     */
+    public static void setDefaultTimeZone(@Nullable TimeZone timeZone) {
+        if (timeZone == null) {
+            throw new IllegalArgumentException("默认时区不允许为空! 修改失败! fail.");
+        }
+        DEFAULT_TIME_ZONE.compareAndSet(DEFAULT_TIME_ZONE.get(), timeZone);
+    }
 
     /**
      * 零点时刻. 当天的 yyyy-MM-dd 00:00:00 分
@@ -85,7 +101,8 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
      * @param jdkDate JDK-8 之前的 {@link java.util.Date}
      * @return DateTime233
      */
-    public static DateTime233 from(Date jdkDate) {
+    public static DateTime233 from(@Nullable Date jdkDate) {
+        AssertUtils233.isNotNull(jdkDate, "your Date can not be null! NPE");
         long originalTimeMs = jdkDate.getTime();
         return DateTime233.of(originalTimeMs);
     }
@@ -95,7 +112,9 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
      * @param jdkDateTime JDK-8+ 的 {@link java.time.LocalDateTime}
      * @return DateTime233
      */
-    public static DateTime233 from(LocalDateTime jdkDateTime) {
+    public static DateTime233 from(@Nullable LocalDateTime jdkDateTime) {
+        AssertUtils233.isNotNull(jdkDateTime, "your jdkDateTime can not be null! NPE");
+
         final ZoneOffset offset = OffsetDateTime.now()
                 .getOffset();
         long originalTimeMs = jdkDateTime.toInstant(offset)
@@ -104,7 +123,7 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     }
 
     /**
-     * @param jdkZonedDateTime JDK-8+ 的时区日期时间 {@link java.time.ZonedDateTime}
+     * @param jdkZonedDateTime JDK 8+ 版本, 的时区日期时间 {@link java.time.ZonedDateTime}
      * @return DateTime233
      */
     public static DateTime233 from(ZonedDateTime jdkZonedDateTime) {
@@ -114,8 +133,7 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     }
 
     private DateTime233(long originalTimeMs) {
-        this(originalTimeMs,
-                TimeZone.getDefault());
+        this(originalTimeMs, DEFAULT_TIME_ZONE.get());
     }
 
     public static DateTime233 of(String dateTimeText,
@@ -146,7 +164,7 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
                 minute,
                 second,
                 millisSecond,
-                TimeZone.getDefault()
+                DEFAULT_TIME_ZONE.get()
                         .getRawOffset()
         );
     }
@@ -155,12 +173,12 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
                        TimeZone inputTimeZone) {
 
         this.timeZone = Optional.ofNullable(inputTimeZone)
-                .orElse(TimeZone.getDefault());
+                .orElse(DEFAULT_TIME_ZONE.get());
 
         this.originalTimeMs = originalTimeMs;
 
         // 时区加成 GMT offset
-        int gmtOffsetMs = TimeZone.getDefault()
+        int gmtOffsetMs = DEFAULT_TIME_ZONE.get()
                 .getRawOffset();
         this.offsetByTimeZoneMs = gmtOffsetMs;
         this.timeZoneId = Math.toIntExact(TimeUnit.MILLISECONDS.toHours(gmtOffsetMs));
@@ -235,12 +253,12 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     }
 
     @Override
-    public int gmtOffsetMs() {
+    public int getOffsetMs() {
         return this.offsetByTimeZoneMs;
     }
 
     @Override
-    public int gmtZoneId() {
+    public int getZoneId() {
         return this.timeZoneId;
     }
 
@@ -394,7 +412,7 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     }
 
     @Override
-    public DateTime233 timeZone(int timeZoneHourId) {
+    public DateTime233 getTimeZone(int timeZoneHourId) {
         int timeZoneOffsetMs = TimeZone233.getZoneOffsetMs(timeZoneHourId);
         return new DateTime233(year,
                 month,
@@ -559,11 +577,13 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
         return this.plusMillisSecond(-millisSecond);
     }
 
-    public long originalTimeMs() {
+    @Override
+    public long getOriginalTimeMs() {
         return this.originalTimeMs;
     }
 
-    public long zoneTimeMs() {
+    @Override
+    public long getZoneTimeMs() {
         return this.zonedTimeMs;
     }
 
@@ -571,8 +591,8 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     /**
      * @return 时区 by JDK
      */
-    public TimeZone timeZone() {
-        return this.timeZone;
+    public TimeZone getTimeZone() {
+        return (TimeZone) this.timeZone.clone();
     }
 
     /**
@@ -639,12 +659,12 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
     }
 
     @Override
-    public int weekDay() {
+    public int getWeekDay() {
         return DateTime233.weekDay(this.zonedTimeMs);
     }
 
     @Override
-    public int whichYear() {
+    public int getWhichYear() {
         return DateTime233.whichYear(this.zonedTimeMs);
     }
 
@@ -668,7 +688,7 @@ public class DateTime233 implements DateTimeApi<DateTime233> {
      * @return 今年里的第多少天
      */
     @Override
-    public int dayOfYear() {
+    public int getDayOfYear() {
         return dayOfYear(this.zonedTimeMs);
     }
 

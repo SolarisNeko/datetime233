@@ -1,8 +1,6 @@
-package com.neko233.datetime.api;
+package com.neko233.datetime.period;
 
 import com.neko233.datetime.DateTime233;
-import com.neko233.datetime.period.Period233;
-import com.neko233.datetime.period.PeriodDaddy233;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +11,15 @@ import java.util.concurrent.TimeUnit;
  * Date on 2023-04-26
  */
 public interface PeriodApi {
+
+    /**
+     * 第几个周期
+     *
+     * @return 当只有一个周期时, default 1. 当为 0 时, 需要外部自己判断
+     */
+    int getPeriodIndex();
+
+    void setPeriodIndex(int periodIndex) throws IllegalAccessException;
 
     /**
      * @return 周期开始的时间 timeMs
@@ -29,10 +36,27 @@ public interface PeriodApi {
      */
     long getRefreshMs();
 
+    default long getPeriodDurationMs() {
+        return getEndMs() - getStartMs();
+    }
+
     /**
      * @return 返回持有多个周期的 PeriodDaddy233
      */
-    PeriodDaddy233 toPeriodsDaddy();
+    default PeriodDad233 toPeriodDad() {
+        long periodDurationMs = getPeriodDurationMs();
+        return toPeriodDad(periodDurationMs, TimeUnit.MILLISECONDS);
+    }
+
+    default PeriodDad233 toPeriodDad(long duration,
+                                     TimeUnit durationTimeUnit) {
+        return toPeriodDad(duration, durationTimeUnit, null, null);
+    }
+
+    PeriodDad233 toPeriodDad(long durationTime,
+                             TimeUnit durationTimeUnit,
+                             Integer intervalTimeStep,
+                             TimeUnit intervalTimeUnit);
 
     /**
      * @return 获取周期列表
@@ -43,6 +67,7 @@ public interface PeriodApi {
         return 0;
     }
 
+    long getExpireMs();
 
     /**
      * @return 是否需要刷新
@@ -71,7 +96,7 @@ public interface PeriodApi {
         long tempMs = getStartMs();
         while (tempMs < getEndMs()) {
             DateTime233 of = DateTime233.ofZeroClock(tempMs);
-            int weekday = of.weekDay();
+            int weekday = of.getWeekDay();
             if (weekday == 6) {
                 dateTime233List.add(of);
                 tempMs += TimeUnit.DAYS.toMillis(1);
@@ -85,6 +110,12 @@ public interface PeriodApi {
             tempMs += TimeUnit.DAYS.toMillis(1);
         }
         return dateTime233List;
+    }
+
+    boolean isInPeriod(long currentMs);
+
+    default boolean isNotInPeriod(long currentMs) {
+        return !isInPeriod(currentMs);
     }
 
 

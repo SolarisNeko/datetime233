@@ -1,5 +1,6 @@
 package com.neko233.datetime;
 
+import com.neko233.datetime.constant.DateTimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,6 +35,17 @@ public class DateTime233Test {
     public static final DateTime233 dateTime233_1970_01_01_00_00_00 = DateTime233.of("1970-01-01 00:00:00",
             "yyyy-MM-dd HH:mm:ss");
 
+    @NotNull
+    private static String getDateTimeString(LocalDateTime dateTime) {
+        return dateTime
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    @NotNull
+    private static String getDateTimeString(ZonedDateTime dateTime) {
+        return dateTime
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 
     @Test
     public void bugfix_test_timeMs_1() {
@@ -107,7 +119,6 @@ public class DateTime233Test {
         }
     }
 
-
     @Test
     public void test_sync_jdk_weekday() {
         DateTime233 of = DateTime233.of("2010-01-01",
@@ -125,7 +136,7 @@ public class DateTime233Test {
                     .getDayOfWeek();
 
             int jdkWeekDay = dayOfWeek.getValue();
-            int weekDay = dateTime233.weekDay();
+            int weekDay = dateTime233.getWeekDay();
 
             if (jdkWeekDay != weekDay) {
                 String format = String.format("jdkWeek = %s, dateTime233 week = %s, dateTime = %s",
@@ -138,7 +149,6 @@ public class DateTime233Test {
 
         }
     }
-
 
     @Test
     public void test_from_jdkDate() throws ParseException {
@@ -209,15 +219,13 @@ public class DateTime233Test {
                 of3.toString());
     }
 
-
     @Test
     public void test_weekday_1() {
         DateTime233 of = DateTime233.of("2010-01-31",
                 "yyyy-MM-dd");
         assertEquals(7,
-                of.weekDay());
+                of.getWeekDay());
     }
-
 
     @Test
     public void test_weekday_2() {
@@ -225,13 +233,13 @@ public class DateTime233Test {
         DateTime233 of = DateTime233.of(1703952000000L);
 
         assertEquals(7,
-                of.weekDay());
+                of.getWeekDay());
     }
 
     @Test
     public void gmtOffset() {
         int zoneId = DateTime233.now()
-                .gmtZoneId();
+                .getZoneId();
         assertEquals(8,
                 zoneId);
     }
@@ -291,7 +299,6 @@ public class DateTime233Test {
 
     }
 
-
     @Test
     public void day() {
         int day = DateTime233.now()
@@ -313,7 +320,6 @@ public class DateTime233Test {
                 dateTime.toString("yyyy-MM-dd"));
     }
 
-
     @Test
     public void hour() {
         int hour = DateTime233.now()
@@ -322,7 +328,6 @@ public class DateTime233Test {
                 LocalDateTime.now()
                         .getHour());
     }
-
 
     @Test
     public void hour_set() {
@@ -336,7 +341,6 @@ public class DateTime233Test {
                 dateTime.toString("yyyy-MM-dd HH:mm:ss"));
     }
 
-
     @Test
     public void minute() {
         int minute = DateTime233.now()
@@ -345,7 +349,6 @@ public class DateTime233Test {
                 LocalDateTime.now()
                         .getMinute());
     }
-
 
     @Test
     public void minute_set() {
@@ -359,7 +362,6 @@ public class DateTime233Test {
                 dateTime.toString("yyyy-MM-dd HH:mm:ss"));
     }
 
-
     @Test
     public void second() {
         int second = DateTime233.now()
@@ -368,7 +370,6 @@ public class DateTime233Test {
                 LocalDateTime.now()
                         .getSecond());
     }
-
 
     @Test
     public void second_set() {
@@ -381,7 +382,6 @@ public class DateTime233Test {
         assertEquals("2010-01-01 00:00:10",
                 dateTime.toString("yyyy-MM-dd HH:mm:ss"));
     }
-
 
     @Test
     public void plusYears() {
@@ -421,6 +421,7 @@ public class DateTime233Test {
         assertEquals("1971-02-01 00:00:00",
                 dateTime233String);
     }
+
     @Test
     public void plusMonths_bug_2() {
         String dtStr = getDateTimeString(jdkDateTime_1970_01_01_00_00_00.plusMonths(11));
@@ -506,8 +507,6 @@ public class DateTime233Test {
                 dateTime.toString());
     }
 
-
-
     @Test
     public void minusMonths_changeYear() {
         DateTime233 dateTime = DateTime233.now()
@@ -544,7 +543,6 @@ public class DateTime233Test {
         assertEquals(getDateTimeString(now.plusDays(370)),
                 dateTime.toString());
     }
-
 
     @Test
     public void minusDays() {
@@ -600,19 +598,6 @@ public class DateTime233Test {
                 dateTime.toString());
     }
 
-    @NotNull
-    private static String getDateTimeString(LocalDateTime dateTime) {
-        return dateTime
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
-
-    @NotNull
-    private static String getDateTimeString(ZonedDateTime dateTime) {
-        return dateTime
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
-
-
     @Test
     public void toLocalDateTime() {
         DateTime233 now = DateTime233.now();
@@ -637,7 +622,7 @@ public class DateTime233Test {
         // 周一
         DateTime233 of = DateTime233.of("2023-01-09 09:00:00",
                 "yyyy-MM-dd HH:mm:ss");
-        int weekDay = of.weekDay();
+        int weekDay = of.getWeekDay();
         assertEquals(1,
                 weekDay);
     }
@@ -647,7 +632,7 @@ public class DateTime233Test {
         // 周二
         DateTime233 of = DateTime233.of("2023-01-10 09:00:00",
                 "yyyy-MM-dd HH:mm:ss");
-        int weekDay = of.weekDay();
+        int weekDay = of.getWeekDay();
         assertEquals(2,
                 weekDay);
     }
@@ -657,7 +642,7 @@ public class DateTime233Test {
         // 周三
         DateTime233 of = DateTime233.of("2023-01-11 09:00:00",
                 "yyyy-MM-dd HH:mm:ss");
-        int weekDay = of.weekDay();
+        int weekDay = of.getWeekDay();
         assertEquals(3,
                 weekDay);
     }
@@ -667,7 +652,7 @@ public class DateTime233Test {
         // 周四
         DateTime233 of = DateTime233.of("2023-01-12 09:00:00",
                 "yyyy-MM-dd HH:mm:ss");
-        int weekDay = of.weekDay();
+        int weekDay = of.getWeekDay();
 
         assertEquals(4,
                 weekDay);
@@ -678,7 +663,7 @@ public class DateTime233Test {
         // 周五
         DateTime233 of = DateTime233.of("2023-01-13 09:00:00",
                 "yyyy-MM-dd HH:mm:ss");
-        int weekDay = of.weekDay();
+        int weekDay = of.getWeekDay();
         assertEquals(5,
                 weekDay);
     }
@@ -688,7 +673,7 @@ public class DateTime233Test {
         // 周六
         DateTime233 of = DateTime233.of("2023-01-14 09:00:00",
                 "yyyy-MM-dd HH:mm:ss");
-        int weekDay = of.weekDay();
+        int weekDay = of.getWeekDay();
         assertEquals(6,
                 weekDay);
     }
@@ -698,7 +683,7 @@ public class DateTime233Test {
         // 周日
         DateTime233 of = DateTime233.of("2023-01-15 09:00:00",
                 "yyyy-MM-dd HH:mm:ss");
-        int weekDay = of.weekDay();
+        int weekDay = of.getWeekDay();
         assertEquals(7,
                 weekDay);
     }
@@ -706,7 +691,7 @@ public class DateTime233Test {
     @Test
     public void getWeekday_sameTo_jdk_LocalDateTime() {
         int weekDay = DateTime233.now()
-                .weekDay();
+                .getWeekDay();
         assertEquals(LocalDateTime.now()
                         .getDayOfWeek()
                         .getValue(),
@@ -744,13 +729,13 @@ public class DateTime233Test {
     }
 
     @Test
-    public void diff() {
+    public void diffByTimeUnit() {
         DateTime233 one = DateTime233.of("2023-01-01",
                 "yyyy-MM-dd");
         DateTime233 two = DateTime233.of("2023-01-02",
                 "yyyy-MM-dd");
         assertEquals(-1,
-                one.diff(two,
+                one.diffByTimeUnit(two,
                         TimeUnit.DAYS));
     }
 
@@ -761,8 +746,35 @@ public class DateTime233Test {
         DateTime233 two = DateTime233.of("2023-01-02",
                 "yyyy-MM-dd");
         assertEquals(1,
-                one.diffAbs(two,
+                one.diffAbsByTimeUnit(two,
                         TimeUnit.DAYS));
+    }
+
+    @Test
+    public void diff_year() {
+        DateTime233 one = DateTime233.of("2023-01-01",
+                "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2024-02-02",
+                "yyyy-MM-dd");
+        assertEquals(1, one.diff(two, DateTimeUnit.YEAR));
+    }
+
+    @Test
+    public void diff_month() {
+        DateTime233 one = DateTime233.of("2023-01-01",
+                "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2024-02-02",
+                "yyyy-MM-dd");
+        assertEquals(13, one.diff(two, DateTimeUnit.MONTH));
+    }
+
+    @Test
+    public void diff_month_2() {
+        DateTime233 one = DateTime233.of("2023-12-01",
+                "yyyy-MM-dd");
+        DateTime233 two = DateTime233.of("2024-02-02",
+                "yyyy-MM-dd");
+        assertEquals(2, one.diff(two, DateTimeUnit.MONTH));
     }
 
 
