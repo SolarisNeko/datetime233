@@ -3,7 +3,9 @@
 ## Introduction
 DateTime233 is a powerful and intuitive DateTime utility that simplifies working with dates and times. Designed from scratch with a flux-style architecture, it seamlessly integrates with the DateTime233 API.
 
-DateTime233 是一个强大且直观的日期和时间工具，简化了日期和时间操作。从零开始设计的，采用流式架构，与 DateTime233 API 无缝衔接。
+DateTime233 是一个强大且直观的日期和时间工具，简化了日期和时间操作。
+
+从零开始设计的，采用流式风格，与 JDK Date/LocalDateTime 无缝衔接。
 
 从 0 开始设计的 DateTime233, 提供可并发的一体化 DateTime 操作. 
 
