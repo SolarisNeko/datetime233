@@ -77,6 +77,15 @@ packaging.
 
 DateTime233 可无缝连接 LocalDateTime 和 Date 对象，省去了繁琐的自定义封装。
 
+```java
+
+DateTime233 fromOldDate = DateTime233.from(new Date());
+
+DateTime233 fromJdk8DateTime = DateTime233.from(LocalDateTime.now());
+
+
+```
+
 # License
 
 DateTime233 is licensed under Apache 2.0.
