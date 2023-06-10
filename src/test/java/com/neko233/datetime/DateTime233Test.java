@@ -206,7 +206,7 @@ public class DateTime233Test {
     @Test
     public void test_special_format_2() {
         DateTime233 of2 = DateTime233.of("2010.01.01",
-                "yyyy,MM,dd");
+                "yyyy.MM.dd");
         assertEquals("2010-01-01 00:00:00",
                 of2.toString());
     }
@@ -214,7 +214,7 @@ public class DateTime233Test {
     @Test
     public void test_special_format_3() {
         DateTime233 of3 = DateTime233.of("2010,01,01",
-                "yyyy.MM.dd");
+                "yyyy,MM,dd");
         assertEquals("2010-01-01 00:00:00",
                 of3.toString());
     }
