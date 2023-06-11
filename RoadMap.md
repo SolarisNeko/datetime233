@@ -1,8 +1,12 @@
 # RoadMap
 
-## v1.0.2
+### v1.0.2
+1. [Add] [Feature] TimeDiffConverter233 时间间隔转换器. 基于 8640600000L ms <--> 1 second 200 ms 文本转换场景
+2. [Add] 升级基础库 to  <skilltree-commons-core.version>0.0.7</skilltree-commons-core.version>
+
+## v1.0.1
 1. [Add] 完善了 DateTime API
-2. [Add] 重新设计了一下 Period233, PeriodDad233 (原 PeriodDaddy233), 修改为无状态+深拷贝风格, 避免引用问题
+2. [Add] [Refactor] 重新设计了一下 Period233, PeriodDad233 (原 PeriodDaddy233), 修改为无状态+深拷贝风格, 避免引用问题
 3. [Add] 增加单元测试
 4. [Bugfix] JDK LocalDateTime 可能引发的一些 async bug 处理
 
