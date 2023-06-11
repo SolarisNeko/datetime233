@@ -1,6 +1,6 @@
 # RoadMap
 
-## v1.0.1
+## v1.0.2
 1. [Add] 完善了 DateTime API
 2. [Add] 重新设计了一下 Period233, PeriodDad233 (原 PeriodDaddy233), 修改为无状态+深拷贝风格, 避免引用问题
 3. [Add] 增加单元测试

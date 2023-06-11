@@ -31,14 +31,14 @@ DateTime 操作.
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>datetime233</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
 ## gradle
 
 ```kotlin
-implementation("com.neko233:datetime233:1.0.1")
+implementation("com.neko233:datetime233:1.0.2")
 
 ```
 
@@ -46,11 +46,11 @@ implementation("com.neko233:datetime233:1.0.1")
 
 Latest supported versions:
 
-JDK 8 = 1.0.1
+JDK 8 = 1.0.2
 
-JDK 11 = 1.0.1
+JDK 11 = 1.0.2
 
-JDK 17 = 1.0.1
+JDK 17 = 1.0.2
 
 ## Key Terminology | 术语
 
@@ -99,7 +99,7 @@ DateTime233 is licensed under Apache 2.0.
 <dependency>
     <groupId>com.neko233</groupId>
     <artifactId>datetime233</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 
 ```
@@ -107,7 +107,7 @@ DateTime233 is licensed under Apache 2.0.
 ### Gradle
 
 ```groovy
-implementation group: 'com.neko233', name: 'datetime233', version: '1.0.1'
+implementation group: 'com.neko233', name: 'datetime233', version: '1.0.2'
 ```
 
 # Code
