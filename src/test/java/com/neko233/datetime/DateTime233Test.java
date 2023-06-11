@@ -1,6 +1,6 @@
 package com.neko233.datetime;
 
-import com.neko233.datetime.constant.DateTimeUnit;
+import com.neko233.datetime.unit.DateTimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;

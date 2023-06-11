@@ -118,7 +118,7 @@ implementation group: 'com.neko233', name: 'datetime233', version: '1.0.1'
 
 ```java
 
-import com.neko233.datetime.constant.DateTimeUnit;
+import com.neko233.datetime.unit.DateTimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;

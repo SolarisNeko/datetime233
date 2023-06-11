@@ -43,12 +43,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <gpg.executable>gpg</gpg.executable>
+
+        <skilltree-commons-core.version>0.0.7</skilltree-commons-core.version>
     </properties>
 
     <dependencies>
 
+        <!-- Base  -->
+        <dependency>
+            <groupId>com.neko233</groupId>
+            <artifactId>skilltree-commons-core</artifactId>
+            <version>${skilltree-commons-core.version}</version>
+        </dependency>
 
-        <!-- Util -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -57,11 +64,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.neko233</groupId>
-            <artifactId>skilltree-commons-core</artifactId>
-            <version>0.0.6</version>
-        </dependency>
 
         <!-- Test -->
         <dependency>
