@@ -1,9 +1,6 @@
 package com.neko233.datetime.utils;
 
-import com.neko233.skilltree.commons.core.base.CollectionUtils233;
 
-import com.neko233.skilltree.commons.core.base.StringUtils233;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -14,27 +11,27 @@ public class TextTokenUtils {
 
     @NotNull
     public static Map<String, String> matchFullyToTokenMap(String input,
-                                                            String format,
-                                                            String... tokens) {
+                                                           String format,
+                                                           String... tokens) {
         return matchFullyToTokenMap(input, format, Arrays.asList(tokens));
     }
 
     @NotNull
     public static Map<String, String> matchFullyToTokenMap(String input,
-                                                            String format,
-                                                            List<String> tokens) {
+                                                           String format,
+                                                           List<String> tokens) {
 
         // 不匹配空
-        if (StringUtils.isBlank(input)
-                || StringUtils233.isBlank(format)
-                || CollectionUtils233.isEmpty(tokens)) {
+        if (StringUtilsForDt.isBlank(input)
+                || StringUtilsForDt.isBlank(format)
+                || CollectionUtilsForDt.isEmpty(tokens)) {
             return Collections.emptyMap();
         }
 
 
         Map<Character, String> firstCharTokenMap = Optional.ofNullable(tokens).orElse(Collections.emptyList())
                 .stream()
-                .filter(StringUtils233::isNotBlank)
+                .filter(StringUtilsForDt::isNotBlank)
                 .collect(Collectors.toMap(str -> str.charAt(0), Function.identity()));
 
 

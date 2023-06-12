@@ -1,9 +1,9 @@
 package com.neko233.datetime.period;
 
 import com.neko233.datetime.DateTime233;
-import com.neko233.skilltree.commons.core.annotation.Nullable;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;

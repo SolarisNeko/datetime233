@@ -1,7 +1,7 @@
 package com.neko233.datetime.timezone;
 
 import com.neko233.datetime.constant.TimeZoneType;
-import org.apache.commons.lang3.StringUtils;
+import com.neko233.datetime.utils.StringUtilsForDt;
 
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ public class TimeZone233 {
     private static ZoneId getZoneId(TimeZoneType timeZoneType,
                                     String timeZoneHourId) {
         String zone = TimeZoneType.getNameByType(timeZoneType);
-        if (StringUtils.isBlank(zone)) {
+        if (StringUtilsForDt.isBlank(zone)) {
             return null;
         }
         return ZoneId.of(zone + timeZoneHourId);
@@ -74,7 +74,7 @@ public class TimeZone233 {
         String timeZoneStr = TimeZoneHelper.getOffsetStringByHourId(timeZoneHourId);
 
         String zone = TimeZoneType.getNameByType(timeZoneType);
-        if (StringUtils.isBlank(zone)) {
+        if (StringUtilsForDt.isBlank(zone)) {
             return null;
         }
 

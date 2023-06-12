@@ -1,7 +1,8 @@
 package com.neko233.datetime.convert;
 
 
-import com.neko233.skilltree.commons.core.base.StringUtils233;
+
+import com.neko233.datetime.utils.StringUtilsForDt;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -67,7 +68,7 @@ public class TimeDiffConverter233 {
             return 0L;
         }
         List<String> tokenList = Arrays.stream(text.split(" "))
-                .filter(StringUtils233::isNotBlank)
+                .filter(StringUtilsForDt::isNotBlank)
                 .map(String::trim)
                 .collect(Collectors.toList());
 
@@ -77,7 +78,7 @@ public class TimeDiffConverter233 {
             String valueText = tokenList.get(i);
             String unitText = tokenList.get(i + 1);
 
-            if (StringUtils233.isBlank(valueText)) {
+            if (StringUtilsForDt.isBlank(valueText)) {
                 throw new IllegalArgumentException();
             }
 
